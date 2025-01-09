@@ -16,11 +16,13 @@ graphics = PicoGraphics(DISPLAY)
 # X location for columns
 vert_lines = [10,21,32]
 
-## Network Bars
+# Power Display (Width needed default - 10)
+power_start_x = 0
+## Network Bars  (Width needed default- 10)
 net_start_x = 11
-## DNS Blinks
+## DNS Blinks  (Width needed default - 10)
 dns_start_x = 22
-# Clock
+# Clock  (Width needed - 15S)
 clock_start_x = 37
 clock_start_y = 1
 

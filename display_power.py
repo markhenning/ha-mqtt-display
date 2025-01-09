@@ -1,8 +1,10 @@
 import math
-import settings as settings
+import settings
 import asyncio
 
 current_displayed_power = []
+
+start_x = settings.power_start_x
 
 async def draw_power_chase(graphics):
     global current_displayed_power
@@ -107,7 +109,7 @@ async def draw_power_chase(graphics):
                         graphics.set_pen(fg_pen)
                     else:
                         graphics.set_pen(bg_pen)
-                    graphics.pixel(x,y+1)         
+                    graphics.pixel(start_x + x,y+1)         
             settings.gu.update(graphics)
             await asyncio.sleep_ms(75)
         

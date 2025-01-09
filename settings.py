@@ -1,4 +1,3 @@
-from mqtt_as import MQTTClient, config
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 
@@ -6,7 +5,8 @@ from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 gu = GalacticUnicorn()
 gu.set_brightness(0.2)
 graphics = PicoGraphics(DISPLAY)
-
+width = GalacticUnicorn.WIDTH
+height = GalacticUnicorn.HEIGHT
 
 ##
 ##   DISPLAY LOCATIONS
@@ -26,7 +26,30 @@ dns_start_x = 22
 clock_start_x = 37
 clock_start_y = 1
 
+## Basic colours
+white = graphics.create_pen(255, 255, 255)
+lgrey = graphics.create_pen(150, 150, 150)
+green = graphics.create_pen(0, 255, 0)
+red = graphics.create_pen(255, 0, 0)
+blue = graphics.create_pen(0, 0, 255)
+yellow = graphics.create_pen(255,255,0)
+purple = graphics.create_pen(128,0,128)
+black = graphics.create_pen(0, 0, 0)
+
+##
+## Power Settings
+##
+power_width = 10
+power_rows = 10 # (note - you need top 1 for the power bar, so for the GU - "11 rows - 1 for power bar"
+power_animation_delay = 75
+power_map = { '5000' : red,
+              '500' : yellow,
+              '0' : green,
+              }
+
+##
 ## DNS Blink Settings
+##
 
 ## Min/maxblinks for each colour, adjust here, will render "min" at program start
 dot_maxes = { 'blues' : 60, 'oranges': 5, 'reds': 5 }
@@ -46,20 +69,6 @@ vert_start_colour = 90
 # How much to increase the colour by each step
 vert_fade = 40
 
-## Set variables to the size of the display for looping later
-width = GalacticUnicorn.WIDTH
-height = GalacticUnicorn.HEIGHT
-
-## Set colours so we can use them quickly later
-white = graphics.create_pen(255, 255, 255)
-lgrey = graphics.create_pen(150, 150, 150)
-green = graphics.create_pen(0, 255, 0)
-red = graphics.create_pen(255, 0, 0)
-blue = graphics.create_pen(0, 0, 255)
-yellow = graphics.create_pen(255,255,0)
-purple = graphics.create_pen(128,0,128)
-black = graphics.create_pen(0, 0, 0)
-
 ## Fudge so I can fade lights on the internet graphs, I can't work out how to directly edit a pen (or make a temp one, soo...)
 # Each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
 
@@ -77,8 +86,7 @@ net_download = [graphics.create_pen(0, 30, 0),
         graphics.create_pen(0, 255, 0),
 ]
 
-
-## DNS Blinkies colours, same as above, 
+## DNS Blinkies colours, same as above, but you should always start with (0,0,0)
 
 dns_colours = {
 'blues' : [graphics.create_pen(0, 0, 0),

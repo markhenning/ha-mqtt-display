@@ -5,15 +5,16 @@ import asyncio
 import math
 
 ## Reference other files for imports:
+import connectivity
 import display_setup as ds
 import display_power as dp
 import display_network as dn
 import display_blinks as db
 import display_clock as dc
-import settings as settings
+import settings
 
 # Local configuration
-config = settings.config
+config = connectivity.config
 
 ## Display instances and global variable loads
 gu = settings.gu

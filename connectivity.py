@@ -6,3 +6,7 @@ config['wifi_pw'] = '<WiFi-Password'
 config['server'] = '<MQTT-Server' 
 config['user'] = '<MQTT-Username'
 config['password'] = '<MQTT-Password'
+
+
+## Don't forget the # on the end here to collect all of the entries
+mqtt_topic = 'haexport/sensor/#'

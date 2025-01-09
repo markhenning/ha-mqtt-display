@@ -7,8 +7,6 @@ gu = GalacticUnicorn()
 gu.set_brightness(0.2)
 graphics = PicoGraphics(DISPLAY)
 
-## Don't forget the # on the end here to collect all of the entries
-mqtt_topic = 'haexport/sensor/#'
 
 ##
 ##   DISPLAY LOCATIONS

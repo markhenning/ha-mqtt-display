@@ -16,7 +16,7 @@ def draw_network_stats(graphics):
     ## New values should enter in the middle, and then phase outward
     
     ## Clear the section from memory
-    graphics.set_pen(settings.BLACK)
+    graphics.set_pen(settings.black)
     graphics.rectangle(start_x,0,10,11)    
     
     ## Adjust the display memory with new data

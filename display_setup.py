@@ -51,7 +51,7 @@ async def blink_pixel(X,Y,colour):
     print("Start Blink")
     set_pixel(X,Y,colour)
     await asyncio.sleep(0.3)
-    set_pixel(X,Y,BLACK)
+    set_pixel(X,Y,settings.black)
     print("End Blink")
 
 async def set_pixel(X,Y,colour):

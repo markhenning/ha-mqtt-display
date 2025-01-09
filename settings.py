@@ -59,14 +59,14 @@ width = GalacticUnicorn.WIDTH
 height = GalacticUnicorn.HEIGHT
 
 ## Set colours so we can use them quickly later
-WHITE = graphics.create_pen(255, 255, 255)
-LGREY = graphics.create_pen(150, 150, 150)
-GREEN = graphics.create_pen(0, 255, 0)
-RED = graphics.create_pen(255, 0, 0)
-BLUE = graphics.create_pen(0, 0, 255)
-YELLOW = graphics.create_pen(255,255,0)
-PURPLE = graphics.create_pen(128,0,128)
-BLACK = graphics.create_pen(0, 0, 0)
+white = graphics.create_pen(255, 255, 255)
+lgrey = graphics.create_pen(150, 150, 150)
+green = graphics.create_pen(0, 255, 0)
+red = graphics.create_pen(255, 0, 0)
+blue = graphics.create_pen(0, 0, 255)
+yellow = graphics.create_pen(255,255,0)
+purple = graphics.create_pen(128,0,128)
+black = graphics.create_pen(0, 0, 0)
 
 ## Fudge so I can fade lights on the internet graphs, I can't work out how to directly edit a pen (or make a temp one, soo...)
 # Each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries

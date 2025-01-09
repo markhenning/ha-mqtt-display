@@ -18,8 +18,8 @@ import clock_font as cf
 
 ## Load variables
 pool = settings.ntp_pool
-fg_pen = settings.LGREY
-bg_pen = settings.BLACK
+fg_pen = settings.lgrey
+bg_pen = settings.black
 
 ## Display Location:
 start_x = settings.clock_start_x

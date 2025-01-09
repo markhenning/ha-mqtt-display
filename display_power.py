@@ -97,8 +97,8 @@ async def draw_power_chase(graphics):
         
   
         ## Set the pens we want to use:
-        fg_pen = settings.PURPLE
-        bg_pen = settings.BLACK
+        fg_pen = settings.purple
+        bg_pen = settings.black
         
         for shift in range(12,-1,-1):
             for y in range(0,len(power_display)):
@@ -117,13 +117,13 @@ async def draw_power_chase(graphics):
         
     ## Finally tidy up and change the top bar:
     if total_energy >= 5000:
-        graphics.set_pen(settings.RED)
+        graphics.set_pen(settings.red)
     elif total_energy >=500:
-        graphics.set_pen(settings.YELLOW)
+        graphics.set_pen(settings.yellow)
     elif total_energy > 0:
-        graphics.set_pen(settings.GREEN)
+        graphics.set_pen(settings.green)
     else:
-        graphics.set_pen(settings.WHITE)
+        graphics.set_pen(settings.white)
     
     graphics.line(0, 0, 10, 0)
     

@@ -1,4 +1,4 @@
-import settings as settings
+import settings
 import asyncio
 import random
 

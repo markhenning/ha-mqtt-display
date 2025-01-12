@@ -1,0 +1,4 @@
+typings/
+mqtt_as/
+pico_sdk_import.cmake
+/.vscode

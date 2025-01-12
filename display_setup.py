@@ -1,4 +1,4 @@
-import settings as settings
+import settings
 import asyncio
 
 ## Load in variables
@@ -47,20 +47,20 @@ def draw_gridline_vert(graphics):
 #    graphics.pixel(X,Y)
 #    gu.update(graphics)    
 
-async def blink_pixel(X,Y,colour):
-    print("Start Blink")
-    set_pixel(X,Y,colour)
-    await asyncio.sleep(0.3)
-    set_pixel(X,Y,settings.black)
-    print("End Blink")
+# async def blink_pixel(X,Y,colour):
+#     print("Start Blink")
+#     set_pixel(X,Y,colour)
+#     await asyncio.sleep(0.3)
+#     set_pixel(X,Y,settings.black)
+#     print("End Blink")
 
-async def set_pixel(X,Y,colour):
-    graphics.set_pen(colour)
-    graphics.pixel(X,Y)
-    gu.update(graphics)   
+# async def set_pixel(X,Y,colour):
+#     graphics.set_pen(colour)
+#     graphics.pixel(X,Y)
+#     gu.update(graphics)   
 
-def blink(x,y):
-    await set_pixel(x,y,GREEN)
-    await asyncio.sleep(0.1)
-    await set_pixel(x,y,BLACK)
-    await asyncio.sleep(0.1)
+# def blink(x,y):
+#     await set_pixel(x,y,GREEN)
+#     await asyncio.sleep(0.1)
+#     await set_pixel(x,y,BLACK)
+#     await asyncio.sleep(0.1)

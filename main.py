@@ -2,7 +2,6 @@ from mqtt_as import MQTTClient, config
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 import asyncio
-import math
 
 ## Reference other files for imports:
 import connectivity
@@ -51,13 +50,13 @@ def callback(topic, msg, retained, properties=None):
 
 ## Connection Handler - essentially just "Subscribe to these topics")
 async def conn_han(client):
-    await client.subscribe(settings.mqtt_topic, 1)
+    await client.subscribe(connectivity.mqtt_topic, 1)
 
 ## MQTT config options, configured down here as it needs callback/conn_han to exist
 config['subs_cb'] = callback
 config['connect_coro'] = conn_han
 
-MQTTClient.DEBUG = True  # Optional: print diagnostic messages
+#MQTTClient.DEBUG = True  # Optional: print diagnostic messages
 client = MQTTClient(config)
 
 ## This will be the main client loop, 

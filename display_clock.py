@@ -1,4 +1,4 @@
-import settings as settings
+import settings
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 import asyncio

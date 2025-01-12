@@ -20,6 +20,7 @@ vert_lines = [10,21,32]
 power_start_x = 0
 ## Network Bars  (Width needed default- 10)
 net_start_x = 11
+net_width = 10 ## If you change this, ensure there's enough entries (width / 2) in both of the net_*bars below
 ## DNS Blinks  (Width needed default - 10)
 dns_start_x = 22
 # Clock  (Width needed - 15S)

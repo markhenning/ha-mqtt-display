@@ -1,30 +1,31 @@
 import math
-import settings as settings
+import settings
 import asyncio
  
 ## Load in settings
 start_x = settings.net_start_x
+net_width = settings.net_width
 
 ## Rudimentary FIFO queues to store rolling data
-download_stats = [0,0,0,0,0]
-upload_stats = [0,0,0,0,0]
+download_stats = [0] * (net_width // 2)
+upload_stats = [0] * (net_width // 2)
 
 
 def draw_network_stats(graphics):
-    ## We've got 10 columns here, 11 -> 20 to draw the graphs
-    ## 5 download, 5 upload
-    ## New values should enter in the middle, and then phase outward
+    ## We've got 10 ("net_width) columns here, to draw the graphs
+    ## 5 download, 5 upload (net_width //2)
+    ## New values should enter in the right column on each section
     
     ## Clear the section from memory
     graphics.set_pen(settings.black)
-    graphics.rectangle(start_x,0,10,11)    
+    graphics.rectangle(start_x,0,start_x + net_width,11)    
     
     ## Adjust the display memory with new data
     
     ## Download stats:
     draw_network_bars(graphics, start_x, download_stats, settings.net_download, flip=False, offset=0)
     ## Upload stats:
-    draw_network_bars(graphics, start_x, upload_stats, settings.net_upload, flip=False, offset=5)
+    draw_network_bars(graphics, start_x, upload_stats, settings.net_upload, flip=False, offset=(net_width // 2))
 
     # And finally, display the new charts
     settings.gu.update(graphics)

@@ -28,7 +28,7 @@ colourmap = settings.dns_colourmap
 ## Internal counts, don't change these
 count = { 'blues' : 0, 'oranges': 0, 'reds': 0 }
 desired = mins.copy()
-dotgrid  = []
+dotgrid = []
 blanks_queue = []
 
 ## Basic object to hold all the info for a dot/pixel
@@ -42,7 +42,7 @@ def init_dotgrid():
     global dotgrid
     global blanks_queue
 
-    dotgrid = [[0 for y in range(12)] for x in range(11)]
+    dotgrid = [[Dot('greens',0) for y in range(12)] for x in range(11)]
     for x in range(0,10):
         for y in range(0,11):
             dotgrid[x][y] = Dot('greens',0)

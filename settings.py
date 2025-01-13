@@ -20,7 +20,8 @@ vert_lines = [10,21,32]
 power_start_x = 0
 ## Network Bars  (Width needed default- 10)
 net_start_x = 11
-net_width = 10 ## If you change this, ensure there's enough entries (width / 2) in both of the net_*bars below
+## If you change this, ensure there's enough entries (width / 2) in both of the net_*bars below
+net_width = 10 
 ## DNS Blinks  (Width needed default - 10)
 dns_start_x = 22
 # Clock  (Width needed - 15S)
@@ -43,9 +44,9 @@ black = graphics.create_pen(0, 0, 0)
 power_width = 10
 power_rows = 10 # (note - you need top 1 for the power bar, so for the GU - "11 rows - 1 for power bar"
 power_animation_delay = 75
-power_map = { '5000' : red,
-              '500' : yellow,
-              '0' : green,
+power_map = { 5000 : red,
+              500 : yellow,
+              0 : green,
               }
 
 ##
@@ -54,7 +55,7 @@ power_map = { '5000' : red,
 
 ## Min/maxblinks for each colour, adjust here, will render "min" at program start
 dot_maxes = { 'blues' : 60, 'oranges': 5, 'reds': 5 }
-dot_mins = { 'blues' : 10, 'oranges': 1, 'reds': 1 }
+dot_mins = { 'blues' : 10, 'oranges': 0, 'reds': 0 }
 
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
 dns_colourmap = { 'no_error' : 'blues',
@@ -73,6 +74,11 @@ vert_fade = 40
 ## Fudge so I can fade lights on the internet graphs, I can't work out how to directly edit a pen (or make a temp one, soo...)
 # Each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
 
+## Settings - Network
+
+# ms to wait before drawing next pixel up in network display
+net_animation_delay = 100
+
 net_upload = [graphics.create_pen(0, 0, 30),
         graphics.create_pen(0, 0, 60),
         graphics.create_pen(0, 0, 80),
@@ -86,6 +92,32 @@ net_download = [graphics.create_pen(0, 30, 0),
         graphics.create_pen(0, 100, 0),
         graphics.create_pen(0, 255, 0),
 ]
+
+net_download_scale = {
+    1 : 0,
+    2 : 2000,
+    3 : 5000,
+    4 : 10000, 
+    5 : 50000,
+    6 : 500000,
+    7 : 2000000,
+    8 : 2000000,
+    9 : 4000000,
+    10 : 8000000,
+}
+
+net_upload_scale = {
+    1 : 0,
+    2 : 1000,
+    3 : 4000,
+    4 : 10000, 
+    5 : 25000,
+    6 : 250000,
+    7 : 500000,
+    8 : 700000,
+    9 : 900000,
+    10 : 1000000,
+}
 
 ## DNS Blinkies colours, same as above, but you should always start with (0,0,0)
 

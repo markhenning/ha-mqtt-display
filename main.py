@@ -45,7 +45,7 @@ def callback(topic, msg, retained, properties=None):
     elif 'tdns_' in string_topic:
         ## Don't need an async for this as we're just modifying an array in memory, there's already an async task for blinkies
         db.handle_dns(string_topic, string_message)
-        pass
+        #pass
     elif ('power' or 'energy' in string_topic): 
         asyncio.create_task(dp.handle_energy(graphics,string_topic,string_message))
 

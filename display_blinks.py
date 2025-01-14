@@ -71,12 +71,24 @@ def add_dot(colour):
         #print(f"Popping {index}")
     
         # Check we're not "over budget" and then add the dot
-        if count[colour] != maxes[colour]:
+        if count[colour] < maxes[colour]:
             temp_x, temp_y = blanks_queue.pop(index)
             dotgrid[temp_x][temp_y]= Dot(colour,4)
             count[colour] = count[colour] + 1
+            #print(f"Adding {colour}")
         else:
             print(f"ERROR - Already at max for {colour}")
+
+def randomise_desired():
+    global desired
+    
+    if random.randint(0,20) == 1:
+        tempblue = random.randint(mins['blues'],maxes['blues'])
+        temporange = random.randint(mins['oranges'],maxes['oranges'])
+        tempred = random.randint(mins['reds'],maxes['reds'])
+        desired = { 'blues' : tempblue, 'oranges': temporange, 'reds': tempred }
+        print("Updated desired numbers")
+        print(desired)
 
 ## Loop to drop the colour levels once every 0.4 seconds:
 async def update_dotgrid_display(graphics):
@@ -87,14 +99,8 @@ async def update_dotgrid_display(graphics):
     while True:
         
         ## Temp code to adjust the desired rates randomly rather than relying on MQTT
-        
-        #if random.randint(0,20) == 1:
-        #    tempblue = random.randint(mins['blues'],maxes['blues'])
-        #    temporange = random.randint(mins['oranges'],maxes['oranges'])
-        #    tempred = random.randint(mins['reds'],maxes['reds'])
-        #    desired = { 'blues' : tempblue, 'oranges': temporange, 'reds': tempred }
-        #    print("Updated desired numbers")
-        #    print(desired)
+        ## Uncomment and disable the mqtt callback (comment out main.py / callback /db.handle_dns(string_topic, string_message)) and enable the pass statement
+        #randomise_desired()
     
         ## Check if we've got the right amount of dots, add if we don't
         check_rates_up()
@@ -108,13 +114,15 @@ async def update_dotgrid_display(graphics):
                         
                         # Drop the dot level and write back to the dotgrid
                         dotgrid[x][y].level = dotgrid[x][y].level - 1
-                        current_dot = dotgrid[x][y]
-                        graphics.set_pen(dns_colours[current_dot.colour][current_dot.level])
+                        
+                        ## Update the pixel colour
+                        new_colour = (dns_colours[current_dot.colour])[0]
+                        graphics.set_pen(new_colour)
                         graphics.pixel((start_x+x),y)
                         
                         # # Mark cell as blank and available for use
                         blanks_queue.append([x,y])
-                        count[current_dot.colour] = count[current_dot.colour] -1
+                        count[(dotgrid[x][y].colour)] = count[(dotgrid[x][y].colour)] -1
 
                         ## Only add a new dot to replace if we're below the desired number of those dots (we just removed this one from use (and the count)
                         if (count[current_dot.colour] < desired[current_dot.colour]):
@@ -129,6 +137,7 @@ async def update_dotgrid_display(graphics):
                     graphics.set_pen(dns_colours[current_dot.colour][current_dot.level])
                     graphics.pixel((start_x+x),y)
                     dotgrid[x][y].level = dotgrid[x][y].level - 1
+                    
         
         ## Draw out the changes we've made
         settings.gu.update(graphics)            
@@ -145,37 +154,33 @@ def handle_dns(string_topic, string_message):
     ## After looking at it, DNS queries per minute with No Error are normally between 100 and 800, so let's just do /10 and adjust to be between min/max
     if "no_error" in string_topic:
         testCount = int(float(string_message)) // 10
-        if testCount < mins[(colourmap['no_error'])]:
+        if testCount <= mins[(colourmap['no_error'])]:
             new_no_error = mins[colourmap['no_error']]
         elif mins[colourmap['no_error']] < testCount <= maxes[colourmap['no_error']]:
             new_no_error = testCount
         else:
             new_no_error = maxes[colourmap['no_error']]
         desired[colourmap['no_error']] = new_no_error
-        #print(f"Updated no_error to {new_no_error}")
-        #print(desired)
     ## Let's try the same thing for blocked, it's normally between 0 and 30, with peaks up to 90. That's seems fine as we'll noticed 5 dots appearing if theres's usually only 1
     elif "blocked" in string_topic:
         testCount = int(float(string_message)) // 10
-        if testCount < mins[colourmap['blocked']]:
+        if testCount <= mins[colourmap['blocked']]:
             new_blocked = mins[colourmap['blocked']]
         elif mins[colourmap['blocked']] < testCount <= maxes[colourmap['blocked']]:
             new_blocked = testCount
         else:
             new_blocked = maxes[colourmap['blocked']]
-        desired[colourmap['blocked']] = new_blocked
-        #print(f"Updated blocked to {new_blocked}")
-        #print(desired)      
+        desired[colourmap['blocked']] = new_blocked     
     elif "servfail" in string_topic:
+
         testCount = int(float(string_message)) // 10
-        if testCount < mins[colourmap['servfail']]:
+        if testCount <= mins[colourmap['servfail']]:
             new_servfail = mins[colourmap['servfail']]
         elif mins[colourmap['servfail']] < testCount <= maxes[colourmap['servfail']]:
             new_servfail = testCount
         else:
             new_servfail = maxes[colourmap['servfail']]
         desired[colourmap['servfail']] = new_servfail
-        #print(f"Updated servfail to {new_servfail}")    
     else:
         pass
         ## We got handed another type of DNS stat, just ignore it.

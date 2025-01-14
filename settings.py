@@ -59,7 +59,7 @@ dot_mins = { 'blues' : 10, 'oranges': 0, 'reds': 0 }
 
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
 dns_colourmap = { 'no_error' : 'blues',
-              'blocked' :'oranges',
+              'blocked' : 'oranges',
               'servfail' : 'reds',
 }
 

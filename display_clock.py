@@ -81,16 +81,70 @@ def update_clock_display(graphics, curr_time):
             else:
                 graphics.set_pen(bg_pen)
             graphics.pixel((start_x + x),(start_y + y))
+    settings.gu.update(graphics)    
+
+def update_bars(graphics):
+    
+    # Get the current times for each time unit
+    times = { 'hrs' : time.localtime()[3],
+              'min' : time.localtime()[4],
+              'sec' : time.localtime()[5],
+    }
+
+    # Put in the white vertical end bars for the bars, these don't need to be here, will move later
+    graphics.set_pen(settings.lgrey)
+    graphics.line(start_x+1, 7, start_x+1, 10)
+    graphics.line(start_x+14, 7, start_x+14, 10)
+    
+    ## Change the memory for the bars to all black before the redraw
+    graphics.set_pen(settings.black)
+    graphics.rectangle(start_x + 2, 7, start_x + 12, 9)
+
+    ## Start drawing the bars in the right locations:
+    bar_start = start_x + 2
+    bar_start_y = 7
+      
+    clk_col = settings.clock_colours
+    clk_col_map = settings.clock_colour_map
+    
+    count = 0
+    for unit in sorted(times.keys()):
         
-    settings.gu.update(graphics)
+        ## Take each of the time units and work out how many full and partial pixels we need:
+        if unit == 'hrs':
+            full_pixel = times[unit] // 2
+            partial = times[unit] % 2
+        else:
+            full_pixel = times[unit] // 5
+            partial = times[unit] % 5
+        
+        ## Draw a line of "full" pixels
+        graphics.set_pen(clk_col[clk_col_map[unit]][-1])
+        graphics.line(bar_start, bar_start_y + count,  bar_start + full_pixel, bar_start_y  + count)
+        
+        # Add on one pixel of the right colour for the "partial"
+        graphics.set_pen(clk_col[clk_col_map[unit]][partial])
+        graphics.pixel(bar_start + full_pixel, bar_start_y + count)
+        
+        count = count + 1
+    
+    # Finally, draw it to the display
+    settings.gu.update(graphics) 
+
+
 
 async def print_clock(graphics):
     # Last printed minute (so we're not redrawing over and over again)
     printed_min = -1
     
     while True:
+
+        ## First off - update the bars under the clock
+        update_bars(graphics)
+        
+        
         ## First - we need to check if we've updated the display this minute, no point in doing lots of work for no reason
-        ## time.datetime()[5] is current minute, adjust [5] to get other fields (4 is hour, 6 is seconds)
+        ## time.datetime()[5] is current minute, adjust [5] to get other fields (3 is hour, 6 is seconds)
 
         if rtc.datetime()[5] != printed_min:
             ## Updated printed min so we don't do it again
@@ -107,7 +161,12 @@ async def print_clock(graphics):
         ## Since we've got a check in place to prevent unecessary work, we can spin this every second
         await asyncio.sleep(1)
 
-
+def draw_clock_chrome(graphics):
+    top_left = ((start_x),(start_y + 7))
+    bottom_right = ((start_x + 15),(start_y + 9))
+    graphics.set_pen(settings.green)
+    graphics.rectangle(start_x, 7, (start_x + 15), 9)
+    
 # Debug function - not used - print out the buffer that would get made for display
 def print_buffer(curr_time):
     print(curr_time)

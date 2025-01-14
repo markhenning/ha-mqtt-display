@@ -66,6 +66,35 @@ dns_colourmap = { 'no_error' : 'blues',
 ## Settings - Clock
 ntp_pool = "pool.ntp.org"
 
+clock_colour_map = { 'hrs': 'blues',
+                     'min': 'yellows',
+                     'sec': 'reds',
+}
+
+clock_colours = {
+'reds' : [graphics.create_pen(0, 0, 0),
+        graphics.create_pen(80, 0, 0),
+        graphics.create_pen(120, 0, 0),
+        graphics.create_pen(160, 0, 0),
+        graphics.create_pen(200, 0, 0),
+        graphics.create_pen(240, 0, 0),
+],
+'yellows' : [graphics.create_pen(0, 0, 0),
+        graphics.create_pen(80, 80, 0),
+        graphics.create_pen(120, 120, 0),
+        graphics.create_pen(160, 160, 0),
+        graphics.create_pen(200, 200, 0),
+        graphics.create_pen(240, 240, 0),
+],
+'blues' : [graphics.create_pen(0, 0, 0),
+        graphics.create_pen(0, 102, 204),
+        graphics.create_pen(0, 128, 255),
+        graphics.create_pen(51, 133, 255),
+        graphics.create_pen(102, 178, 255),
+        graphics.create_pen(153, 203, 255),
+],
+}
+
 # Colour for the bar - This gets adjusted by "fade" upwards, so this is the colour for the darkest pixels
 vert_start_colour = 90
 # How much to increase the colour by each step

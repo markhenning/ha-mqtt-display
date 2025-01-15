@@ -36,7 +36,7 @@ async def draw_power_chase(graphics):
     #   # e.g, for if we're updating from 7 to 6:
     #  XXXXXX...........XXXXXXXXXX...
     #|New Stats| Spacer| Old Stats|
-    #And essentiall, we slide a window of width 10 down from right to left
+    #And essentiall, we slide a view window of width 10 down from right to left
 
     power_display = []
 

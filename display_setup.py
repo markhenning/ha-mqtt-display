@@ -9,21 +9,20 @@ fade_colour = settings.vert_fade
 def draw_gridline_vert(graphics):
 
     ## Work out the height of a column, and then draw lines - increase brightness, decreasing size by one each time
-    ## to give a fade effect
+    ## to give a fade effect (e.g. 0 -> 11 in dark grey, 1 -> 10 in grey, 2-9 in ligher grey etc)
 
-    ## // is integer division, work out the mid point
     mid = (settings.height//2) 
 
     for col in cols:
-        up = 0
-        down = settings.height
+        top = 0
+        bottom = settings.height
         colour = start_colour
-        while up <= mid :
+        while top <= mid :
 
             graphics.set_pen((graphics.create_pen(colour, colour, colour)))
-            graphics.line(col, up , col, down)
-            up = up + 1
-            down = down - 1
+            graphics.line(col, top , col, bottom)
+            top += 1
+            bottom += 1
             colour = colour + fade_colour
         
         ## If we've got an odd number of LEDs to light, we need to finally paint the middle pixel

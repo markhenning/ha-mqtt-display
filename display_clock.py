@@ -90,15 +90,10 @@ def update_bars(graphics):
               'min' : time.localtime()[4],
               'sec' : time.localtime()[5],
     }
-
-    # Put in the white vertical end bars for the bars, these don't need to be here, will move later
-    graphics.set_pen(settings.lgrey)
-    graphics.line(start_x+1, 7, start_x+1, 10)
-    graphics.line(start_x+14, 7, start_x+14, 10)
     
     ## Change the memory for the bars to all black before the redraw
     graphics.set_pen(settings.black)
-    graphics.rectangle(start_x + 2, 7, start_x + 12, 9)
+    graphics.rectangle(start_x + 2, 7, 12, 3)
 
     ## Start drawing the bars in the right locations:
     bar_start = start_x + 2
@@ -137,6 +132,8 @@ async def print_clock(graphics):
     # Last printed minute (so we're not redrawing over and over again)
     printed_min = -1
     
+    draw_clock_chrome(graphics)
+    
     while True:
 
         ## First off - update the bars under the clock
@@ -162,10 +159,10 @@ async def print_clock(graphics):
         await asyncio.sleep(1)
 
 def draw_clock_chrome(graphics):
-    top_left = ((start_x),(start_y + 7))
-    bottom_right = ((start_x + 15),(start_y + 9))
-    graphics.set_pen(settings.green)
-    graphics.rectangle(start_x, 7, (start_x + 15), 9)
+    # Put in the white vertical end bars for the bars, these don't need to be here, will move later
+    graphics.set_pen(settings.lgrey)
+    graphics.line(start_x+1, 7, start_x+1, 10)
+    graphics.line(start_x+14, 7, start_x+14, 10)
     
 # Debug function - not used - print out the buffer that would get made for display
 def print_buffer(curr_time):

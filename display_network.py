@@ -7,8 +7,8 @@ start_x = settings.net_start_x
 net_width = settings.net_width
 
 ## Rudimentary FIFO queues to store rolling data
-download_stats = [0] * (net_width // 2)
-upload_stats = [0] * (net_width // 2)
+download_stats = [0] * ((net_width // 2))
+upload_stats = [0] * ((net_width // 2))
 
 def draw_network_stats(graphics):
     ## We've got 10 ("net_width) columns here, to draw the graphs
@@ -22,14 +22,14 @@ def draw_network_stats(graphics):
     ## Adjust the display memory with new data
     
     ## Download stats:
-    draw_old_network_bars(graphics, start_x, download_stats, settings.net_download, flip=False, offset=0)
+    draw_network_history(graphics, start_x, download_stats, settings.net_download, flip=False, offset=0)
     ## Upload stats:
-    draw_old_network_bars(graphics, start_x, upload_stats, settings.net_upload, flip=False, offset=(net_width // 2))
+    draw_network_history(graphics, start_x, upload_stats, settings.net_upload, flip=False, offset=(net_width // 2))
 
     # And finally, display the new charts
     settings.gu.update(graphics)
 
-def draw_old_network_bars(graphics, start_x, drawdata, colour, flip=False, offset=0):
+def draw_network_history(graphics, start_x, drawdata, colour, flip=False, offset=0):
 
     values = drawdata[:-1]
     if flip:
@@ -52,9 +52,33 @@ def calculate_network_pixels(bps, direction):
             dots = key
 
     return dots
+
+async def draw_current(graphics):
     
+    ## Lock these so we don't have the underlying array changing in the 0.5s we're drawing
+    upstat = upload_stats[-1]
+    downstat = download_stats[-1]
+    
+    ## Work out how many we need to run, bigger number wins
+    if downstat < upstat:
+        loop = upstat
+    else:
+        loop = downstat
+    
+    ## Loop and add 1 pixel height every <period>, stopping when the height's correct
+    for i in range(loop + 1):
+        if i <= downstat:
+            graphics.set_pen(settings.net_download[-1])
+            ### I'm not insane, "line" function can have off by one errors if it's a single pixel width
+            graphics.line((start_x + (net_width // 2) - 1), 11, (start_x + (net_width // 2) - 1), (11-i))
+        if i <= upstat:
+            graphics.set_pen(settings.net_upload[-1])
+            graphics.line((start_x + (net_width - 1)), 11, (start_x + (net_width - 1)), (11-i))
+        settings.gu.update(graphics)
+        await asyncio.sleep_ms(settings.net_animation_delay)
 
 async def handle_network(graphics, string_topic,string_message):
+
     global  download_stats,  upload_stats
     int_message = int(float(string_message))
     
@@ -70,6 +94,9 @@ async def handle_network(graphics, string_topic,string_message):
         upload_stats.pop(0)
         upload_stats.append(bar_height)
         draw_network_stats(graphics)
+        asyncio.create_task(draw_current(graphics))
+
 
     else:
         print("Error: Don't know what to do with " + string_topic)
+

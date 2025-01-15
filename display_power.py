@@ -151,3 +151,4 @@ async def handle_energy(graphics, string_topic, string_message):
     else: ## Otherwise, it's a device specific power stat, store it
         messagestat = int(float(string_message))
         energy_stats.update({string_topic : messagestat})
+

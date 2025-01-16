@@ -23,8 +23,8 @@ graphics = settings.graphics
 ## Overview
 ## =========================
 ## We're going to set up an asyncio queue that will run various tasks that will perform, and then sleep until awoken again
-## Some of these will be triggered by time (e.g. clock updates, blinking lights
-## Some will be triggered by MQTT messages appearing on the queue (e.g. power stats update)
+## Some of these will be triggered by time (e.g. clock updates, blinking lights) - These we kick off and let run, then...
+## Start the listener client for MQTT messages appearing on the queue (e.g. power stats update) and sleep for 1s
 ##
 ## It's a bit of a mess, but bear with me
 
@@ -56,11 +56,10 @@ async def conn_han(client):
 ## MQTT config options, configured down here as it needs callback/conn_han to exist
 config['subs_cb'] = callback
 config['connect_coro'] = conn_han
-
 #MQTTClient.DEBUG = True  # Optional: print diagnostic messages
 client = MQTTClient(config)
 
-## This will be the main client loop, 
+## This will be the main client loop
 async def main(client):
 
     ## One off actions for Setup
@@ -87,8 +86,6 @@ async def main(client):
     ## And the main wait task for asyncio, MQTT callbacks will trigger what it needs
     while True:
         await asyncio.sleep(1)
-
-
 
 
 

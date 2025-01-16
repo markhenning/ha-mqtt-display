@@ -23,13 +23,14 @@ mins = settings.dot_mins
 start_x = settings.dns_start_x
 
 ### Mapping - this maps the MQTT message string to look for with which colour dict to use later for display
-colourmap = settings.dns_colourmap
+colour_map = settings.dns_colour_map
+scales = settings.dns_scale_factors
 
 ## Internal counts, don't change these
 count = { 'blues' : 0, 'oranges': 0, 'reds': 0 }
 desired = mins.copy()
 dotgrid = []
-blanks_queue = []
+blanks_queue = []  # Holds (x,y) co-ordinates of unused/blank dots
 
 ## Basic object to hold all the info for a dot/pixel
 class Dot:
@@ -42,6 +43,7 @@ def init_dotgrid():
     global dotgrid
     global blanks_queue
 
+    ## Fill the dotgrid with Dots of setting (first colour in the colour array, level 0), and mark them all as "blank"
     dotgrid = [[Dot(next(iter(dns_colours)),0) for y in range(0,settings.height)] for x in range(0,settings.dns_width)]
     for x in range(0,settings.dns_width):
         for y in range(0,settings.height):
@@ -144,44 +146,62 @@ async def update_dotgrid_display(graphics):
         await asyncio.sleep(0.4)
 
 ## Function to adjust amount of dots based on MQTT messages
-## This is a lot of copy/paste for logic, I can tighted it up by using colourmap.keys, but if anyone ever wants to add something new/adjust individual rates, this is the best way to demo it
+## This is a lot of copy/paste for logic, I can tighted it up by using colour_map.keys, but if anyone ever wants to add something new/adjust individual rates, this is the best way to demo it
 
 def handle_dns(string_topic, string_message):
     ## HA sometimes provides "unavailable" if one of the source connections fails (e.g. cert expires) - this skips it
     if "unavailable" in string_message:
         pass
     
-    ## After looking at it, DNS queries per minute with No Error are normally between 100 and 800, so let's just do /10 and adjust to be between min/max
-    if "no_error" in string_topic:
-        testCount = int(float(string_message)) // 10
-        if testCount <= mins[(colourmap['no_error'])]:
-            new_no_error = mins[colourmap['no_error']]
-        elif mins[colourmap['no_error']] < testCount <= maxes[colourmap['no_error']]:
-            new_no_error = testCount
-        else:
-            new_no_error = maxes[colourmap['no_error']]
-        desired[colourmap['no_error']] = new_no_error
-    ## Let's try the same thing for blocked, it's normally between 0 and 30, with peaks up to 90. That's seems fine as we'll noticed 5 dots appearing if theres's usually only 1
-    elif "blocked" in string_topic:
-        testCount = int(float(string_message)) // 10
-        if testCount <= mins[colourmap['blocked']]:
-            new_blocked = mins[colourmap['blocked']]
-        elif mins[colourmap['blocked']] < testCount <= maxes[colourmap['blocked']]:
-            new_blocked = testCount
-        else:
-            new_blocked = maxes[colourmap['blocked']]
-        desired[colourmap['blocked']] = new_blocked     
-    elif "servfail" in string_topic:
+    found = False
+    for response in colour_map:
+        if response in string_topic:
+            res_count = int(float(string_message)) // scales[response]
+            if res_count <= mins[(colour_map[response])]:
+                new_count = mins[colour_map[response]]
+            elif mins[colour_map[response]] < res_count <= maxes[colour_map[response]]:
+                new_count = res_count
+            else:
+                new_count = maxes[colour_map[response]]
+            desired[colour_map[response]] = new_count
+    
+    if not found:
+        ## Got a DNS response code that doesn't match a known response, ignore it
+        #print(f"I don't know what to do with {string_topic} {string_message}")
+        pass   
 
-        testCount = int(float(string_message)) // 10
-        if testCount <= mins[colourmap['servfail']]:
-            new_servfail = mins[colourmap['servfail']]
-        elif mins[colourmap['servfail']] < testCount <= maxes[colourmap['servfail']]:
-            new_servfail = testCount
-        else:
-            new_servfail = maxes[colourmap['servfail']]
-        desired[colourmap['servfail']] = new_servfail
-    else:
-        pass
+
+    ## After looking at it, DNS queries per minute with No Error are normally between 100 and 800, so let's just do /10 and adjust to be between min/max
+    # if "no_error" in string_topic:
+    #     testCount = int(float(string_message)) // 10
+    #     if testCount <= mins[(colour_map['no_error'])]:
+    #         new_no_error = mins[colour_map['no_error']]
+    #     elif mins[colour_map['no_error']] < testCount <= maxes[colour_map['no_error']]:
+    #         new_no_error = testCount
+    #     else:
+    #         new_no_error = maxes[colour_map['no_error']]
+    #     desired[colour_map['no_error']] = new_no_error
+    # ## Let's try the same thing for blocked, it's normally between 0 and 30, with peaks up to 90. That's seems fine as we'll noticed 5 dots appearing if theres's usually only 1
+    # elif "blocked" in string_topic:
+    #     testCount = int(float(string_message)) // 10
+    #     if testCount <= mins[colour_map['blocked']]:
+    #         new_blocked = mins[colour_map['blocked']]
+    #     elif mins[colour_map['blocked']] < testCount <= maxes[colour_map['blocked']]:
+    #         new_blocked = testCount
+    #     else:
+    #         new_blocked = maxes[colour_map['blocked']]
+    #     desired[colour_map['blocked']] = new_blocked     
+    # elif "servfail" in string_topic:
+
+    #     testCount = int(float(string_message)) // 10
+    #     if testCount <= mins[colour_map['servfail']]:
+    #         new_servfail = mins[colour_map['servfail']]
+    #     elif mins[colour_map['servfail']] < testCount <= maxes[colour_map['servfail']]:
+    #         new_servfail = testCount
+    #     else:
+    #         new_servfail = maxes[colour_map['servfail']]
+    #     desired[colour_map['servfail']] = new_servfail
+    # else:
+    #     pass
         ## We got handed another type of DNS stat, just ignore it.
         #print(f"I don't know what to do with {string_topic} {string_message}")

@@ -155,11 +155,16 @@ dot_maxes = { 'blues' : 60, 'oranges': 5, 'reds': 5 }
 dot_mins = { 'blues' : 10, 'oranges': 0, 'reds': 0 }
 
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
-dns_colourmap = { 'no_error' : 'blues',
+dns_colour_map = { 'no_error' : 'blues',
               'blocked' : 'oranges',
               'servfail' : 'reds',
 }
 
+## Take the DNS queries and divide by X to give the number of dots (default 10 for all 3)
+dns_scale_factors = { 'no_error' : 10,
+              'blocked' : 10,
+              'servfail' : 10,
+}
 
 ## DNS Blinkies colours, same as above, but you should always start with (0,0,0)
 dns_colours = {

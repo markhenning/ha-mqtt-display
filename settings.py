@@ -42,6 +42,7 @@ net_start_x = 11
 net_width = 10 
 ## DNS Blinks  (Width needed default - 10)
 dns_start_x = 22
+dns_width = 10
 # Clock  (Width needed - 15S)
 clock_start_x = 37
 clock_start_y = 1

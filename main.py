@@ -64,7 +64,13 @@ client = MQTTClient(config)
 async def main(client):
 
     ## One off actions for Setup
-    
+    ## Init Tasks - One off tasks necessary needed on startup
+
+    ## Init the array for the blinkies DNS section
+    db.init_dotgrid()
+    ## Load the main display segment dividers
+    ds.draw_gridline_vert(graphics)
+
     ## Wait for the Wifi to come up and the MQTT client to connect
     await client.connect()
     ## Update the clock, need the client connect first for network connectivity
@@ -83,12 +89,7 @@ async def main(client):
         await asyncio.sleep(1)
 
 
-## Init Tasks - One off tasks necessary needed on startup
 
-## Init the array for the blinkies DNS section
-db.init_dotgrid()
-## Load the main display segment dividers
-ds.draw_gridline_vert(graphics)
 
 
 ## And finally, kick off the async mqtt client loop

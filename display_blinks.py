@@ -42,34 +42,33 @@ def init_dotgrid():
     global dotgrid
     global blanks_queue
 
-    dotgrid = [[Dot('greens',0) for y in range(12)] for x in range(11)]
-    for x in range(0,10):
-        for y in range(0,11):
-            dotgrid[x][y] = Dot('greens',0)
+    dotgrid = [[Dot(next(iter(dns_colours)),0) for y in range(0,settings.height)] for x in range(0,settings.dns_width)]
+    for x in range(0,settings.dns_width):
+        for y in range(0,settings.height):
+            dotgrid[x][y] = Dot(next(iter(dns_colours)),0)
             ## Mark the pixel as blank and available
             blanks_queue.append([x,y])
 
+
+## Function to check if the actual number of dots is less than "desired", add missing ones
 def check_rates_up():
     for colour in count.keys():
-        ## If we've got less than the desired number, add the right amounts of dots for each colour
-        ## Also means we can just use this to preload the array, rather than fitting it into the init script
+
         if count[colour] < desired[colour]:
             for i in range(desired[colour] - count[colour]):
                 #print(f"Correcting to add {colour}")
                 add_dot(colour)
 
-# Function to add a dot of the desired colour, it'll work out the location to put it in
+# Function to add a dot of the desired colour, it'll work out the location to put it in and check if we're over max/under min
 def add_dot(colour):
     global blanks_queue
     global dotgrid
-    #print(len(blanks_queue))
 
     if len(blanks_queue) < 1:
         print("ERROR - No room to add new pixel")
     else:
         index = random.randint(0,len(blanks_queue) - 1)
-        #print(f"Popping {index}")
-    
+
         # Check we're not "over budget" and then add the dot
         if count[colour] < maxes[colour]:
             temp_x, temp_y = blanks_queue.pop(index)
@@ -79,6 +78,7 @@ def add_dot(colour):
         else:
             print(f"ERROR - Already at max for {colour}")
 
+# Unused function - 5% chance that that it'll randomise the "desired" array
 def randomise_desired():
     global desired
     

@@ -44,8 +44,10 @@ def callback(topic, msg, retained, properties=None):
         asyncio.create_task(dn.handle_network(graphics, string_topic, string_message))
     elif 'tdns_' in string_topic:
         ## Don't need an async for this as we're just modifying an array in memory, there's already an async task for blinkies
-        db.handle_dns(string_topic, string_message)
-        #pass
+        if settings.dns_use_mqtt:
+            db.handle_dns(string_topic, string_message)
+        else:
+            pass
     elif ('power' or 'energy' in string_topic): 
         asyncio.create_task(dp.handle_energy(graphics,string_topic,string_message))
 
@@ -54,16 +56,17 @@ async def conn_han(client):
     await client.subscribe(connectivity.mqtt_topic, 1)
 
 ## MQTT config options, configured down here as it needs callback/conn_han to exist
+#MQTTClient.DEBUG = True  # Optional: print diagnostic messages
 config['subs_cb'] = callback
 config['connect_coro'] = conn_han
-#MQTTClient.DEBUG = True  # Optional: print diagnostic messages
 client = MQTTClient(config)
 
 ## This will be the main client loop
 async def main(client):
 
+    ##
     ## One off actions for Setup
-    ## Init Tasks - One off tasks necessary needed on startup
+    ##
 
     ## Init the array for the blinkies DNS section
     db.init_dotgrid()
@@ -74,16 +77,16 @@ async def main(client):
     await client.connect()
     ## Update the clock, need the client connect first for network connectivity
     dc.set_time()
-    
-    ## Time based update tasks
-    ## =======================
+
     ## Set up the blinkies to update outside of MQTT response as they're not directly related
     asyncio.create_task(db.update_dotgrid_display(graphics))
     
     ## Clock maintenance task
     asyncio.create_task(dc.print_clock(graphics))
     
-    ## And the main wait task for asyncio, MQTT callbacks will trigger what it needs
+    ## End - One off actions
+
+    ## And the main wait for MQTT, callbacks will trigger what it needs
     while True:
         await asyncio.sleep(1)
 

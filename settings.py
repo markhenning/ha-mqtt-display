@@ -43,7 +43,7 @@ net_width = 10
 ## DNS Blinks  (Width needed default - 10)
 dns_start_x = 22
 dns_width = 10
-# Clock  (Width needed - 15S)
+# Clock  (Width needed - 15)
 clock_start_x = 37
 clock_start_y = 1
 
@@ -99,6 +99,8 @@ clock_colours = {
 ],
 }
 
+
+
 ## Settings - Network
 
 # ms to wait before drawing next pixel up in network display
@@ -150,6 +152,9 @@ net_upload_scale = {
 ## Settings - DNS Blink
 ##
 
+# Flag to use data from mqtt or generate random data for the blinks
+dns_use_mqtt = True
+
 ## Min/maxblinks for each colour, adjust here, will render "min" at program start
 dot_maxes = { 'blues' : 60, 'oranges': 5, 'reds': 5 }
 dot_mins = { 'blues' : 10, 'oranges': 0, 'reds': 0 }
@@ -160,7 +165,7 @@ dns_colour_map = { 'no_error' : 'blues',
               'servfail' : 'reds',
 }
 
-## Take the DNS queries and divide by X to give the number of dots (default 10 for all 3)
+## Take the DNS queries and divide by X to give the number of dots (default 10 for all 3), will be adjusted to between min and max if necessary
 dns_scale_factors = { 'no_error' : 10,
               'blocked' : 10,
               'servfail' : 10,

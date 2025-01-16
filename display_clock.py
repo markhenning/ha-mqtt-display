@@ -20,6 +20,8 @@ import clock_font as cf
 pool = settings.ntp_pool
 fg_pen = settings.lgrey
 bg_pen = settings.black
+clk_col = settings.clock_colours
+clk_col_map = settings.clock_colour_map
 
 ## Display Location:
 start_x = settings.clock_start_x
@@ -45,6 +47,7 @@ def set_time():
         s.settimeout(1)
         res = s.sendto(NTP_QUERY, addr)
         msg = s.recv(48)
+        print(f"Clock Set")
     finally:
         s.close()
     val = struct.unpack("!I", msg[40:44])[0]
@@ -90,18 +93,15 @@ def update_bars(graphics):
               'min' : time.localtime()[4],
               'sec' : time.localtime()[5],
     }
-    
-    ## Change the memory for the bars to all black before the redraw
-    graphics.set_pen(settings.black)
-    graphics.rectangle(start_x + 2, 7, 12, 3)
 
     ## Start drawing the bars in the right locations:
-    bar_start = start_x + 2
+    bar_start_x = start_x + 2
     bar_start_y = 7
+
+    ## Change the memory for the bars to all black before the redraw
+    graphics.set_pen(settings.black)
+    graphics.rectangle(bar_start_x , bar_start_y, 12, 3)
       
-    clk_col = settings.clock_colours
-    clk_col_map = settings.clock_colour_map
-    
     count = 0
     for unit in sorted(times.keys()):
         
@@ -115,11 +115,11 @@ def update_bars(graphics):
         
         ## Draw a line of "full" pixels
         graphics.set_pen(clk_col[clk_col_map[unit]][-1])
-        graphics.line(bar_start, bar_start_y + count,  bar_start + full_pixel, bar_start_y  + count)
+        graphics.line(bar_start_x, bar_start_y + count,  bar_start_x + full_pixel, bar_start_y  + count)
         
         # Add on one pixel of the right colour for the "partial"
         graphics.set_pen(clk_col[clk_col_map[unit]][partial])
-        graphics.pixel(bar_start + full_pixel, bar_start_y + count)
+        graphics.pixel(bar_start_x + full_pixel, bar_start_y + count)
         
         count = count + 1
     
@@ -136,11 +136,11 @@ async def print_clock(graphics):
     
     while True:
 
-        ## First off - update the bars under the clock
+        ## First off - update the bars under the clock, this needs to happen every second
         update_bars(graphics)
         
         
-        ## First - we need to check if we've updated the display this minute, no point in doing lots of work for no reason
+        ## Next - we need to check if we've updated the time display this minute, no point in doing lots of work for no reason
         ## time.datetime()[5] is current minute, adjust [5] to get other fields (3 is hour, 6 is seconds)
 
         if rtc.datetime()[5] != printed_min:

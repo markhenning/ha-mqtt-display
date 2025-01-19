@@ -6,9 +6,9 @@ import random
 ##
 ## Sets up a dotgrid which maps to a section of the display
 ## Add dots of each colour set at "minimum"
-## Start an async loop to update the display (reduce levels by 1 each time, and when 0 mark them as blank.
+## Start an async loop to update the display (reduce levels by 1 each time, and when 0 mark them as blank.)
 ##
-## "desired" is the key part - adjusting this will case dots to be added/removed as the loop runs
+## "desired" is the key part - adjusting this will cause dots to be added/removed as the loop runs
 
 ## Load in Settings
 
@@ -27,10 +27,14 @@ colour_map = settings.dns_colour_map
 scales = settings.dns_scale_factors
 
 ## Internal counts, don't change these
-count = { 'blues' : 0, 'oranges': 0, 'reds': 0 }
 desired = mins.copy()
 dotgrid = []
 blanks_queue = []  # Holds (x,y) co-ordinates of unused/blank dots
+
+## Generate the count dict to track number of each colour dot
+count = {}
+for colour in mins.keys():
+    count[colour] = 0
 
 ## Basic object to hold all the info for a dot/pixel
 class Dot:
@@ -99,9 +103,7 @@ async def update_dotgrid_display(graphics):
     
     while True:
         
-        ## Temp code to adjust the desired rates randomly rather than relying on MQTT
-        ## Uncomment and disable the mqtt callback (comment out main.py / callback /db.handle_dns(string_topic, string_message)) and enable the pass statement
-        
+        ## If we're set to not use mqtt, generate appropriate data randomly
         if not settings.dns_use_mqtt:
             randomise_desired()
     

@@ -17,7 +17,7 @@ def draw_network_stats(graphics):
     
     ## Clear the section from memory
     graphics.set_pen(settings.black)
-    graphics.rectangle(start_x,0,net_width,11)    
+    graphics.rectangle(start_x,0,net_width,settings.height)    
     
     ## Adjust the display memory with new data
     
@@ -36,9 +36,9 @@ def draw_network_history(graphics, start_x, drawdata, colour, flip=False, offset
         values.reverse()
             
     column = 0
-    for height in values:
+    for net_stat in values:
         graphics.set_pen(colour[column])
-        graphics.line((start_x + column + offset), 11, (start_x + column + offset), (11-height))
+        graphics.line((start_x + column + offset), settings.height, (start_x + column + offset), (settings.height - net_stat))
         column += 1
         
 def calculate_network_pixels(bps, direction):
@@ -70,10 +70,10 @@ async def draw_current(graphics):
         if i <= downstat:
             graphics.set_pen(settings.net_download[-1])
             ### I'm not insane, "line" function can have off by one errors if it's a single pixel width
-            graphics.line((start_x + (net_width // 2) - 1), 11, (start_x + (net_width // 2) - 1), (11-i))
+            graphics.line((start_x + (net_width // 2) - 1), settings.height, (start_x + (net_width // 2) - 1), (settings.height-i))
         if i <= upstat:
             graphics.set_pen(settings.net_upload[-1])
-            graphics.line((start_x + (net_width - 1)), 11, (start_x + (net_width - 1)), (11-i))
+            graphics.line((start_x + (net_width - 1)), settings.height, (start_x + (net_width - 1)), (settings.height-i))
         settings.gu.update(graphics)
         await asyncio.sleep_ms(settings.net_animation_delay)
 

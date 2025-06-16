@@ -18,7 +18,7 @@ total_energy = 0
 
 def get_topbar_colour(total_energy):
     bar_colour = settings.white
-    for key in settings.power_map: 
+    for key in sorted(settings.power_map.keys(), reverse=True): 
         if total_energy >= key:
             bar_colour = settings.power_map[key]
             break
@@ -67,7 +67,7 @@ async def draw_power_chase(graphics):
                 length = math.ceil(usage / (power_list[0]) * 10)
                 
                 ## Sadly, we can get some stats from devices that are higher than last recorded total
-                ## (e.g. 10 seconds after boiling a kettle)
+                ## (e.g. 10 seconds after boiling a kettle, kettle will say 3000, total power will still be 250)
                 ## Not much we can do about this, so let's just make sure we never get more than 10 lights
                 
                 if length > width:
@@ -82,7 +82,7 @@ async def draw_power_chase(graphics):
 
                 line_no = line_no + 1
                 
-        ## We've build the first third, next up, we need to know what the "new values" are and we draw#
+        ## We've build the first third, next up, we need to know what the "new values" are and we draw
         # .'s to pad the blank space until the point where we add in X's to extend the current line backwards until it's {width} long
         
         ## E.g. if current power draw is 9, it's "9 x X's, followed by a ." (Adding in extension of . backwards)
@@ -108,10 +108,10 @@ async def draw_power_chase(graphics):
             power_display[line].pop(19)
             power_display[line].pop(18)
             power_display[line].pop(17)
+            power_display[line].pop(16)
             power_display[line].pop(15)
             power_display[line].pop(13)
-            power_display[line].pop(12)
-            power_display[line].pop(11)
+
 
         ## Display buffer is now built, array in memory of rows, with each row length of 3*width (excluding the fiddle of the last few lines)
 
@@ -143,12 +143,16 @@ async def handle_energy(graphics, string_topic, string_message):
     
     ## Take a topic + message for a power stat and store it
     global  energy_stats, total_energy
-       
-    if "current_demand" in string_topic: ## "Current Demand" is the total energy draw from Octopus, store it
-        total_energy = int(float(string_message))
-        await draw_power_chase(graphics)
-    
-    else: ## Otherwise, it's a device specific power stat, store it
-        messagestat = int(float(string_message))
-        energy_stats.update({string_topic : messagestat})
+
+    ## MQTT will sometimes throw an "unavailable from HA there's a device error etc, just bin these"
+    if string_message != "unavailable":
+
+        ## Then work out what to do
+        if "current_demand" in string_topic: ## "Current Demand" is the total energy draw from Octopus, store it
+            total_energy = int(float(string_message))
+            await draw_power_chase(graphics)
+        
+        else: ## Otherwise, it's a device specific power stat, store it
+            messagestat = int(float(string_message))
+            energy_stats.update({string_topic : messagestat})
 

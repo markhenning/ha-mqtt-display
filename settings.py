@@ -55,7 +55,7 @@ clock_start_y = 1
 
 power_width = 10
 power_rows = 10 # (note - you need top 1 for the power bar, so for the GU - "11 rows - 1 for power bar"
-power_animation_delay = 75
+power_animation_delay = 50
 # Threshold powers for what colour to make the top bar
 power_map = { 5000 : red,
               500 : yellow,

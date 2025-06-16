@@ -30,6 +30,7 @@ start_y = settings.clock_start_y
 ## Internal stuff
 NTP_DELTA = 2208988800
 rtc = machine.RTC()
+hr_offset = 1
 
 displayedTime = 0000
 display_buffer = [] * 5
@@ -51,7 +52,7 @@ def set_time():
     finally:
         s.close()
     val = struct.unpack("!I", msg[40:44])[0]
-    t = val - NTP_DELTA    
+    t = val - ( NTP_DELTA - (hr_offset * 3600))
     tm = time.gmtime(t)
     rtc.datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 

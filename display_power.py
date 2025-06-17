@@ -92,26 +92,30 @@ async def draw_power_chase(graphics):
             length = current_power_display_temp[line]
             
             if length == width:
-                power_display[line] += (['X'] * width)
                 power_display[line] += (['.'] * width)
+                power_display[line] += (['X'] * width)
             elif length == 0:
                 # Pad all 1's
                 power_display[line] += (['X'] * width)
                 power_display[line] += (['.'] * width)
             else:
-                power_display[line] += (['X'] * (length))
-                power_display[line] += (['.'] * width)
-                power_display[line] += (['X'] * (width - length))
+                power_display[line] += (['.'] * (length))
+                power_display[line] += (['X'] * width)
+                power_display[line] += (['.'] * (width - length))
                 
         ## Tweaking - I did all the work, but 10 dots is too much, let's strip some out:      
-        for line in range(0,len(power_display)):
-            power_display[line].pop(19)
-            power_display[line].pop(18)
-            power_display[line].pop(17)
-            power_display[line].pop(16)
-            power_display[line].pop(15)
-            power_display[line].pop(13)
+        # for line in range(0,len(power_display)):
+        #     power_display[line].pop(19)
+        #     power_display[line].pop(18)
+        #     power_display[line].pop(17)
+        #     power_display[line].pop(16)
+        #     power_display[line].pop(15)
+        #     power_display[line].pop(13)
 
+        ## Debugging stuff, will print line array to terminal
+        # for line in power_display:
+        #     print(line)
+        # print()
 
         ## Display buffer is now built, array in memory of rows, with each row length of 3*width (excluding the fiddle of the last few lines)
 

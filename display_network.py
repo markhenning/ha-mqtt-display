@@ -5,6 +5,8 @@ import asyncio
 ## Load in settings
 start_x = settings.net_start_x
 net_width = settings.net_width
+# download_colours = settings.net_download
+# upload_colours = settings.net_upload
 
 ## Rudimentary FIFO queues to store rolling data
 download_stats = [0] * ((net_width // 2))
@@ -16,7 +18,7 @@ def draw_network_stats(graphics):
     ## New values should enter in the right column on each section
     
     ## Clear the section from memory
-    graphics.set_pen(settings.black)
+    graphics.set_pen(settings.pens['black'])
     graphics.rectangle(start_x,0,net_width,settings.height)    
     
     ## Adjust the display memory with new data

@@ -7,7 +7,6 @@ start_colour = settings.vert_start_colour
 fade_colour = settings.vert_fade
 
 def draw_gridline_vert(graphics):
-
     ## Work out the height of a column, and then draw lines - increase brightness, decreasing size by one each time
     ## to give a fade effect (e.g. 0 -> 11 in dark grey, 1 -> 10 in grey, 2-9 in ligher grey etc)
 

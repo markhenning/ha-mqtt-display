@@ -18,8 +18,8 @@ import clock_font as cf
 
 ## Load variables
 pool = settings.ntp_pool
-fg_pen = settings.lgrey
-bg_pen = settings.black
+fg_pen = settings.clock_time_fg
+bg_pen = settings.clock_time_bg
 clk_col = settings.clock_colours
 clk_col_map = settings.clock_colour_map
 
@@ -84,7 +84,7 @@ def update_clock_display(graphics, curr_time):
                 graphics.set_pen(fg_pen)
             else:
                 graphics.set_pen(bg_pen)
-            graphics.pixel((start_x + x),(start_y + y))
+            graphics.pixel((start_x + x),(start_y + y)) # type: ignore
     settings.gu.update(graphics)    
 
 def update_bars(graphics):
@@ -100,7 +100,7 @@ def update_bars(graphics):
     bar_start_y = 7
 
     ## Change the memory for the bars to all black before the redraw
-    graphics.set_pen(settings.black)
+    graphics.set_pen(settings.pens['black'])
     graphics.rectangle(bar_start_x , bar_start_y, 12, 3)
       
     count = 0
@@ -161,7 +161,7 @@ async def print_clock(graphics):
 
 def draw_clock_chrome(graphics):
     # Put in the white vertical end bars for the bars, these don't need to be here, will move later
-    graphics.set_pen(settings.lgrey)
+    graphics.set_pen(fg_pen)
     graphics.line(start_x+1, 7, start_x+1, 10)
     graphics.line(start_x+14, 7, start_x+14, 10)
     

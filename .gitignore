@@ -6,3 +6,4 @@ connectivity.py
 connectivity-template.py
 connectivity-good.py
 ha-mqtt-display.code-workspace
+old_settings.py

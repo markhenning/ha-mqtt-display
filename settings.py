@@ -3,23 +3,72 @@ from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 
 # General Galactic Unicorn setup
 gu = GalacticUnicorn()
-gu.set_brightness(0.2)
+gu.set_brightness(0.3)
 graphics = PicoGraphics(DISPLAY)
 width = GalacticUnicorn.WIDTH
 height = GalacticUnicorn.HEIGHT
 
 ## Basic colours - called by various scripts, placed here to be available below
-white = graphics.create_pen(255, 255, 255)
-lgrey = graphics.create_pen(150, 150, 150)
-green = graphics.create_pen(0, 255, 0)
-spring = graphics.create_pen(20,225,148)
-neon_green = graphics.create_pen(77,255,77)
-red = graphics.create_pen(255, 0, 0)
-blue = graphics.create_pen(0, 0, 255)
-yellow = graphics.create_pen(255,255,0)
-purple = graphics.create_pen(128,0,128)
-plum = graphics.create_pen(137,40,143)
-black = graphics.create_pen(0, 0, 0)
+## If you need a new colour, add it here, and then into the "<thing>_colour_map" for the relevant section
+## Note: they need to be run through "graphics.create_pen(rgb) to make an actual pen to use, if you're adding
+## new outside of the maps, make sure it gets called.
+rgbs = {
+    'spring_greens' : [20,225,148],
+    'sea_greens' : [0,169,165],
+    'blues' : [153, 203, 255],
+    'mango' : [255,119,51],
+    'white' : [255, 255, 255],
+    'lgrey' : [150, 150, 150],
+    'green' : [0, 255, 0],
+    'spring' : [20,225,148],
+    'neon_green' : [77,255,77],
+    'red' : [255, 0, 0],
+    'blue' : [0, 0, 255],
+    'yellow' : [255,255,0],
+    'purple' : [128,0,128],
+    'plum' : [137,40,143],
+    'black' : [0, 0, 0],
+    'honolulu' : [14, 129, 200]
+}
+
+## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
+pens = {}
+for key in rgbs:
+     pens[key] = graphics.create_pen(rgbs[key][0],rgbs[key][1],rgbs[key][2])
+
+# white = graphics.create_pen(255, 255, 255)
+# lgrey = graphics.create_pen(150, 150, 150)
+# green = graphics.create_pen(0, 255, 0)
+# spring = graphics.create_pen(20,225,148)
+# neon_green = graphics.create_pen(77,255,77)
+# red = graphics.create_pen(255, 0, 0)
+# blue = graphics.create_pen(0, 0, 255)
+# yellow = graphics.create_pen(255,255,0)
+# purple = graphics.create_pen(128,0,128)
+# plum = graphics.create_pen(137,40,143)
+# black = graphics.create_pen(0, 0, 0)
+
+## Function to take an RGB value and return a list of fading colours, so we don't have to specify all the rows manually
+def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):
+    ## Set the rate of fading, hard coded for now
+    if sharp_fade:
+        fade = [20,30,40,50,100]
+    else:
+        fade = [40,55,70,85,100]
+
+    # If we need to, start off with a line of 0's
+    if inc_zero:
+        temp_colour = [graphics.create_pen(0, 0, 0)]
+    else:
+        temp_colour = []
+
+    for i in range(lines):
+        scale = fade[i] / 100
+        temp_colour.append(graphics.create_pen(round(scale * colour[0]), round(scale * colour[1]), round(scale * colour[2])))
+
+    return temp_colour
+
+
 
 ##
 ##   DISPLAY LOCATIONS
@@ -31,7 +80,7 @@ vert_lines = [10,21,32]
 # Colour for the bar - This gets adjusted by "fade" upwards, so this is the colour for the darkest pixels
 vert_start_colour = 90
 # How much to increase the colour by each step
-vert_fade = 40
+vert_fade = 20
 
 ##
 ## Settings - Display Locations
@@ -50,8 +99,6 @@ dns_width = 10
 clock_start_x = 37
 clock_start_y = 1
 
-
-
 ##
 ## Settings - Power
 ##
@@ -60,13 +107,20 @@ power_width = 10
 power_rows = 10 # (note - you need top 1 for the power bar, so for the GU - "11 rows - 1 for power bar"
 power_animation_delay = 60
 # Threshold powers for what colour to make the top bar
-power_map = { 5000 : red,
-              500 : yellow,
-              0 : spring,
+power_map = { 5000 : 'red',
+              500 : 'yellow',
+              0 : 'spring',
               }
 # bar_colours
-power_bar_fg = plum
-power_bar_bg = black
+power_bar_fg = pens['plum']
+power_bar_bg = pens['black']
+
+## Use the selected colours to create a dict of colours with all their scalings etc
+## For each one, we'll make an array of "'colour': [100%Colour,80%Colour,....']"
+power_colours = {}
+for entry in power_map.values():
+    power_colours[entry] = pens[entry]
+
 
 ##
 ## Settings - Clock
@@ -74,109 +128,40 @@ power_bar_bg = black
 
 ntp_pool = "pool.ntp.org"
 
-# map what colour to use for each time unit: (needs to have entry in "clock_colours")
+clock_time_fg = pens['lgrey']
+clock_time_bg = pens['black']
+
+# map what colour to use for each time unit:
+## Change this and make sure the colours are in "rgbs" above to change anything in the clock
 clock_colour_map = { 'hrs': 'spring_greens',
                      'min': 'sea_greens',
                      'sec': 'blues',
 }
 
-## Clock colours, need 6 for each, hours will only use [2] and [5].
-## Not all of these are used, but serve as options for colours
+## Use the selected colours to create a dict of colours with all their scalings etc
+## For each one, we'll make an array of "'colour': [100%Colour,80%Colour,....']"
+clock_colours = {}
+for entry in clock_colour_map.values():
+    clock_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= False, inc_zero= True)
 
-## I really need to automate these to do "0% 15%, 30%, 50% 70%, 100%" and autofill the list, one day...
-clock_colours = {
-        'reds' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(80, 0, 0),
-                graphics.create_pen(120, 0, 0),
-                graphics.create_pen(160, 0, 0),
-                graphics.create_pen(200, 0, 0),
-                graphics.create_pen(240, 0, 0),
-        ],
-        'yellows' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(80, 80, 0),
-                graphics.create_pen(120, 120, 0),
-                graphics.create_pen(160, 160, 0),
-                graphics.create_pen(200, 200, 0),
-                graphics.create_pen(240, 240, 0),
-        ],
-        'blues' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(73, 103, 125),
-                graphics.create_pen(93, 123, 155),
-                graphics.create_pen(113, 138, 185),
-                graphics.create_pen(133, 173, 215),
-                graphics.create_pen(153, 203, 255),
-        ],
-        'spring_greens' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(5,105,58),
-                graphics.create_pen(10,135,88),
-                graphics.create_pen(14,160,108),
-                graphics.create_pen(17,190,128),
-                graphics.create_pen(20,225,148),
-        ],
-        'sea_greens' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(0,69,65),
-                graphics.create_pen(0,89,85),
-                graphics.create_pen(0,109,105),
-                graphics.create_pen(0,139,135),
-                graphics.create_pen(0,169,165),
-        ],
-        'mangos' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(90,39,11),
-                graphics.create_pen(145,59,21),
-                graphics.create_pen(185,79,31),
-                graphics.create_pen(225,99,41),
-                graphics.create_pen(255,119,51),
-        ],
-
-}
-
-
-
+##
 ## Settings - Network
+##
 
 # ms to wait before drawing next pixel up in network display
 net_animation_delay = 100
 
-# Colours for the network bars each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
-
-
-net_colours = {
-        'blues' : [graphics.create_pen(0, 0, 30),
-                graphics.create_pen(0, 0, 60),
-                graphics.create_pen(0, 0, 80),
-                graphics.create_pen(0, 0, 100),
-                graphics.create_pen(0, 0, 255),
-        ],
-        'honolulu' : [graphics.create_pen(2, 19, 45),
-                graphics.create_pen(3, 29, 65),
-                graphics.create_pen(3, 39, 85),
-                graphics.create_pen(6, 49, 105),
-                graphics.create_pen(14, 129, 200),
-        ],
-        'greens' : [graphics.create_pen(0, 30, 0),
-                graphics.create_pen(0, 60, 0),
-                graphics.create_pen(0, 80, 0),
-                graphics.create_pen(0, 100, 0),
-                graphics.create_pen(0, 255, 0),
-        ],
-        'sea_greens' : [graphics.create_pen(0,69,65),
-                graphics.create_pen(0,89,85),
-                graphics.create_pen(0,109,105),
-                graphics.create_pen(0,139,135),
-                graphics.create_pen(0,169,165),
-        ],
-        'spring_greens' : [graphics.create_pen(1,30,15),
-                graphics.create_pen(4,55,35),
-                graphics.create_pen(7,80,55),
-                graphics.create_pen(9,100,77),
-                graphics.create_pen(20,225,148),
-        ],
+net_colour_map = { 'download': 'spring_greens',
+                     'upload': 'honolulu',
 }
 
-net_upload = net_colours['honolulu']
+# Colours for the network bars each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
+net_colours = {}
+for entry in net_colour_map.values():
+    net_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = False)
 
-net_download = net_colours['spring_greens']
-
+net_upload = net_colours[(net_colour_map['upload'])]
+net_download = net_colours[(net_colour_map['download'])]
 
 ## Scales - map a bps rate for each number of dots to draw, adjust to match connection
 net_download_scale = {
@@ -212,15 +197,19 @@ net_upload_scale = {
 # Flag to use data from mqtt or generate random data for the blinks
 dns_use_mqtt = True
 
-## Min/maxblinks for each colour, adjust here, will render "min" at program start
-dot_maxes = { 'blues' : 60, 'oranges': 5, 'reds': 5 }
-dot_mins = { 'blues' : 10, 'oranges': 0, 'reds': 0 }
-
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
-dns_colour_map = { 'no_error' : 'blues',
-              'blocked' : 'oranges',
-              'servfail' : 'reds',
+dns_colour_map = { 'no_error' : 'honolulu',
+              'blocked' : 'mango',
+              'servfail' : 'red',
 }
+
+## Min/maxblinks for each colour, adjust here, will render "min" at program start
+## This needs to be updated with the colours when changed, but it really should just be "no_error", etc, work to do....
+dot_maxes = { 'honolulu' : 60, 'mango': 5, 'red': 5 }
+dot_mins = { 'honolulu' : 10, 'mango': 0, 'red': 0 }
+
+## Number of dot brightness levels (Must match the number of entries in the colours list in dns_colours['colour'])
+dot_levels = 5
 
 ## Take the DNS queries and divide by X to give the number of dots (default 10 for all 3), will be adjusted to between min and max if necessary
 dns_scale_factors = { 'no_error' : 10,
@@ -228,30 +217,7 @@ dns_scale_factors = { 'no_error' : 10,
               'servfail' : 10,
 }
 
-## DNS Blinkies colours, same as above, but you should always start with (0,0,0)
-dns_colours = {
-        'blues' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(0, 0, 60),
-                graphics.create_pen(0, 0, 80),
-                graphics.create_pen(0, 0, 100),
-                graphics.create_pen(0, 0, 255),
-                ],
-        'greens' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(0, 60, 0),
-                graphics.create_pen(0, 80, 0),
-                graphics.create_pen(0, 100, 0),
-                graphics.create_pen(0, 255, 0),
-                ],
-        'oranges' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(150, 64, 0),
-                graphics.create_pen(203, 92, 13),
-                graphics.create_pen(252, 102, 0),
-                graphics.create_pen(255, 191, 0),
-                ],
-        'reds' : [graphics.create_pen(0, 0, 0),
-                graphics.create_pen(60, 0, 0),
-                graphics.create_pen(100, 0, 0),
-                graphics.create_pen(175, 0, 0),
-                graphics.create_pen(255, 0, 0),
-                ],
-}
+## Generate the internal colour lists for us to call later
+dns_colours = {}
+for entry in dns_colour_map.values():
+    dns_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = True)

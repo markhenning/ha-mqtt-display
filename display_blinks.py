@@ -17,6 +17,8 @@ dns_colours = settings.dns_colours
 ## Min/maxblinks for each colour
 maxes = settings.dot_maxes
 mins = settings.dot_mins
+## Number of "Levels" of dot brightness (needs supporting list of pens in settings!)
+levels = settings.dot_levels
 
 ## X starting location for grid when drawn on display
 # Note - "dotgrid" is internal array of 0 -> 11, we display it starting with at column specified
@@ -48,10 +50,10 @@ def init_dotgrid():
     global blanks_queue
 
     ## Fill the dotgrid with Dots of setting (first colour in the colour array, level 0), and mark them all as "blank"
-    dotgrid = [[Dot(next(iter(dns_colours)),0) for y in range(0,settings.height)] for x in range(0,settings.dns_width)]
+    dotgrid = [[Dot(next(iter(dns_colours)),0) for y in range(0,settings.height)] for x in range(0,settings.dns_width)] # type: ignore
     for x in range(0,settings.dns_width):
         for y in range(0,settings.height):
-            dotgrid[x][y] = Dot(next(iter(dns_colours)),0)
+            dotgrid[x][y] = Dot(next(iter(dns_colours)),0) # type: ignore
             ## Mark the pixel as blank and available
             blanks_queue.append([x,y])
 
@@ -78,7 +80,7 @@ def add_dot(colour):
         # Check we're not "over budget" and then add the dot
         if count[colour] < maxes[colour]:
             temp_x, temp_y = blanks_queue.pop(index)
-            dotgrid[temp_x][temp_y]= Dot(colour,4)
+            dotgrid[temp_x][temp_y]= Dot(colour,levels)
             count[colour] += 1
             #print(f"Adding {colour}")
         else:
@@ -137,7 +139,7 @@ async def update_dotgrid_display(graphics):
                             #print(f"Dropping {current_dot.colour}")
 
                 ## Other levels, just drop by one
-                if 1 < (dotgrid[x][y].level) <= 4:
+                if 1 < (dotgrid[x][y].level) <= levels:
                     current_dot = dotgrid[x][y]
                     graphics.set_pen(dns_colours[current_dot.colour][current_dot.level])
                     graphics.pixel((start_x+x),y)

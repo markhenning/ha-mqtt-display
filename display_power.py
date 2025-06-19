@@ -17,10 +17,10 @@ energy_stats = {}
 total_energy = 0
 
 def get_topbar_colour(total_energy):
-    bar_colour = settings.white
+    bar_colour = settings.pens['white']
     for key in sorted(settings.power_map.keys(), reverse=True): 
         if total_energy >= key:
-            bar_colour = settings.power_map[key]
+            bar_colour = settings.pens[settings.power_map[key]]
             break
     return bar_colour
 

@@ -12,10 +12,13 @@ height = GalacticUnicorn.HEIGHT
 white = graphics.create_pen(255, 255, 255)
 lgrey = graphics.create_pen(150, 150, 150)
 green = graphics.create_pen(0, 255, 0)
+spring = graphics.create_pen(20,225,148)
+neon_green = graphics.create_pen(77,255,77)
 red = graphics.create_pen(255, 0, 0)
 blue = graphics.create_pen(0, 0, 255)
 yellow = graphics.create_pen(255,255,0)
 purple = graphics.create_pen(128,0,128)
+plum = graphics.create_pen(137,40,143)
 black = graphics.create_pen(0, 0, 0)
 
 ##
@@ -59,9 +62,11 @@ power_animation_delay = 60
 # Threshold powers for what colour to make the top bar
 power_map = { 5000 : red,
               500 : yellow,
-              0 : green,
+              0 : spring,
               }
-
+# bar_colours
+power_bar_fg = plum
+power_bar_bg = black
 
 ##
 ## Settings - Clock
@@ -70,12 +75,15 @@ power_map = { 5000 : red,
 ntp_pool = "pool.ntp.org"
 
 # map what colour to use for each time unit: (needs to have entry in "clock_colours")
-clock_colour_map = { 'hrs': 'mangos',
-                     'min': 'spring_greens',
+clock_colour_map = { 'hrs': 'spring_greens',
+                     'min': 'sea_greens',
                      'sec': 'blues',
 }
 
-## Clock colours, need 6 for each, hours will only use [2] and [5]
+## Clock colours, need 6 for each, hours will only use [2] and [5].
+## Not all of these are used, but serve as options for colours
+
+## I really need to automate these to do "0% 15%, 30%, 50% 70%, 100%" and autofill the list, one day...
 clock_colours = {
         'reds' : [graphics.create_pen(0, 0, 0),
                 graphics.create_pen(80, 0, 0),
@@ -105,6 +113,13 @@ clock_colours = {
                 graphics.create_pen(17,190,128),
                 graphics.create_pen(20,225,148),
         ],
+        'sea_greens' : [graphics.create_pen(0, 0, 0),
+                graphics.create_pen(0,69,65),
+                graphics.create_pen(0,89,85),
+                graphics.create_pen(0,109,105),
+                graphics.create_pen(0,139,135),
+                graphics.create_pen(0,169,165),
+        ],
         'mangos' : [graphics.create_pen(0, 0, 0),
                 graphics.create_pen(90,39,11),
                 graphics.create_pen(145,59,21),
@@ -123,19 +138,45 @@ clock_colours = {
 net_animation_delay = 100
 
 # Colours for the network bars each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
-net_upload = [graphics.create_pen(0, 0, 30),
-        graphics.create_pen(0, 0, 60),
-        graphics.create_pen(0, 0, 80),
-        graphics.create_pen(0, 0, 100),
-        graphics.create_pen(0, 0, 255),
-]
 
-net_download = [graphics.create_pen(0, 30, 0),
-        graphics.create_pen(0, 60, 0),
-        graphics.create_pen(0, 80, 0),
-        graphics.create_pen(0, 100, 0),
-        graphics.create_pen(0, 255, 0),
-]
+
+net_colours = {
+        'blues' : [graphics.create_pen(0, 0, 30),
+                graphics.create_pen(0, 0, 60),
+                graphics.create_pen(0, 0, 80),
+                graphics.create_pen(0, 0, 100),
+                graphics.create_pen(0, 0, 255),
+        ],
+        'honolulu' : [graphics.create_pen(2, 19, 45),
+                graphics.create_pen(3, 29, 65),
+                graphics.create_pen(3, 39, 85),
+                graphics.create_pen(6, 49, 105),
+                graphics.create_pen(14, 129, 200),
+        ],
+        'greens' : [graphics.create_pen(0, 30, 0),
+                graphics.create_pen(0, 60, 0),
+                graphics.create_pen(0, 80, 0),
+                graphics.create_pen(0, 100, 0),
+                graphics.create_pen(0, 255, 0),
+        ],
+        'sea_greens' : [graphics.create_pen(0,69,65),
+                graphics.create_pen(0,89,85),
+                graphics.create_pen(0,109,105),
+                graphics.create_pen(0,139,135),
+                graphics.create_pen(0,169,165),
+        ],
+        'spring_greens' : [graphics.create_pen(1,30,15),
+                graphics.create_pen(4,55,35),
+                graphics.create_pen(7,80,55),
+                graphics.create_pen(9,100,77),
+                graphics.create_pen(20,225,148),
+        ],
+}
+
+net_upload = net_colours['honolulu']
+
+net_download = net_colours['spring_greens']
+
 
 ## Scales - map a bps rate for each number of dots to draw, adjust to match connection
 net_download_scale = {

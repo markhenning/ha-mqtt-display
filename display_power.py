@@ -9,8 +9,8 @@ width = settings.power_width
 rows = settings.power_rows
 
 ## Set the pens we want to use:
-fg_pen = settings.purple
-bg_pen = settings.black
+fg_pen = settings.power_bar_fg
+bg_pen = settings.power_bar_bg
 
 ## Storage vars for actual energy data
 energy_stats = {}
@@ -104,13 +104,13 @@ async def draw_power_chase(graphics):
                 power_display[line] += (['.'] * (width - length))
                 
         ## Tweaking - I did all the work, but 10 dots is too much, let's strip some out:      
-        # for line in range(0,len(power_display)):
-        #     power_display[line].pop(19)
-        #     power_display[line].pop(18)
-        #     power_display[line].pop(17)
-        #     power_display[line].pop(16)
-        #     power_display[line].pop(15)
-        #     power_display[line].pop(13)
+        for line in range(0,len(power_display)):
+            power_display[line].pop(19)
+            power_display[line].pop(18)
+            power_display[line].pop(17)
+            power_display[line].pop(16)
+            power_display[line].pop(15)
+            power_display[line].pop(13)
 
         ## Debugging stuff, will print line array to terminal
         # for line in power_display:

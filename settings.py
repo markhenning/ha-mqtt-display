@@ -160,8 +160,8 @@ net_colours = {}
 for entry in net_colour_map.values():
     net_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = False)
 
-net_upload = net_colours[(net_colour_map['upload'])]
-net_download = net_colours[(net_colour_map['download'])]
+#net_upload = net_colours[(net_colour_map['upload'])]
+#net_download = net_colours[(net_colour_map['download'])]
 
 ## Scales - map a bps rate for each number of dots to draw, adjust to match connection
 net_download_scale = {

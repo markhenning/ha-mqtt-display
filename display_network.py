@@ -5,8 +5,8 @@ import asyncio
 ## Load in settings
 start_x = settings.net_start_x
 net_width = settings.net_width
-# download_colours = settings.net_download
-# upload_colours = settings.net_upload
+download_colours = settings.net_colours[(settings.net_colour_map['download'])]
+upload_colours = settings.net_colours[(settings.net_colour_map['upload'])]
 
 ## Rudimentary FIFO queues to store rolling data
 download_stats = [0] * ((net_width // 2))
@@ -24,9 +24,9 @@ def draw_network_stats(graphics):
     ## Adjust the display memory with new data
     
     ## Download stats:
-    draw_network_history(graphics, start_x, download_stats, settings.net_download, flip=False, offset=0)
+    draw_network_history(graphics, start_x, download_stats, download_colours, flip=False, offset=0)
     ## Upload stats:
-    draw_network_history(graphics, start_x, upload_stats, settings.net_upload, flip=False, offset=(net_width // 2))
+    draw_network_history(graphics, start_x, upload_stats, upload_colours, flip=False, offset=(net_width // 2))
 
     # And finally, display the new charts
     settings.gu.update(graphics)
@@ -70,11 +70,11 @@ async def draw_current(graphics):
     ## Loop and add 1 pixel height every <period>, stopping when the height's correct
     for i in range(loop + 1):
         if i <= downstat:
-            graphics.set_pen(settings.net_download[-1])
+            graphics.set_pen(download_colours[-1])
             ### I'm not insane, "line" function can have off by one errors if it's a single pixel width
             graphics.line((start_x + (net_width // 2) - 1), settings.height, (start_x + (net_width // 2) - 1), (settings.height-i))
         if i <= upstat:
-            graphics.set_pen(settings.net_upload[-1])
+            graphics.set_pen(upload_colours[-1])
             graphics.line((start_x + (net_width - 1)), settings.height, (start_x + (net_width - 1)), (settings.height-i))
         settings.gu.update(graphics)
         await asyncio.sleep_ms(settings.net_animation_delay)

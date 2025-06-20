@@ -2,6 +2,8 @@ import settings
 import asyncio
 import utils
 
+
+
 ## Load in variables
 cols = settings.vert_lines
 start_colour = settings.vert_start_colour

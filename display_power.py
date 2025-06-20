@@ -3,6 +3,7 @@ import settings
 import asyncio
 import utils
 
+
 current_displayed_power = []
 
 start_x = settings.power_start_x

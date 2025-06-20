@@ -3,6 +3,7 @@ import asyncio
 import random
 import utils
 
+
 ## DNS Blinkies Overview
 ##
 ## Sets up a dotgrid which maps to a section of the display

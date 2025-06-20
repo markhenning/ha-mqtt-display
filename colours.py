@@ -23,6 +23,10 @@ rgbs = {
     'honolulu' : [14, 129, 200]
 }
 
+## List/Dict building funtions
+## The follow exist to take rgb values and return "pens", which hold GU usable rgb numbers, some return dicts of lists for colour intensity fading (e.g. []'colour @ 100%', 'colour @ 80%'])
+
+
 def create_pens(graphics):
      
     ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
@@ -33,7 +37,7 @@ def create_pens(graphics):
     return c_pens
 
 ## Function to take an RGB value and return a list of fading colours, so we don't have to specify all the rows manually
-def build_colour_fade (graphics, colour, lines = 5, inc_zero = True, sharp_fade = True):
+def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):
     ## Set the rate of fading, hard coded for now
     if sharp_fade:
         fade = [20,30,40,50,100]
@@ -51,3 +55,27 @@ def build_colour_fade (graphics, colour, lines = 5, inc_zero = True, sharp_fade 
         temp_colour.append(graphics.create_pen(round(scale * colour[0]), round(scale * colour[1]), round(scale * colour[2])))
 
     return temp_colour
+
+## Functions specific to what's required for each type
+def build_dns_colours(dns_colour_map):
+    dns_colours = {}
+    for entry in dns_colour_map.values():
+        dns_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = True)
+
+    return dns_colours
+
+def build_net_colours(net_colour_map):
+        
+    net_colours = {}
+    for entry in net_colour_map.values():
+        net_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = False)
+
+    return net_colours
+
+def build_clock_colours(clock_colour_map):
+    
+    clock_colours = {}
+    for entry in clock_colour_map.values():
+        clock_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= False, inc_zero= True)
+    
+    return clock_colours

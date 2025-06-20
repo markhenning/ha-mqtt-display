@@ -1,6 +1,7 @@
 import math
 import settings
 import asyncio
+import utils
 
 current_displayed_power = []
 
@@ -129,7 +130,7 @@ async def draw_power_chase(graphics):
                     else:
                         graphics.set_pen(bg_pen)
                     graphics.pixel(start_x + x,y+1)         
-            settings.gu.update(graphics)
+            utils.gu.update(graphics)
             await asyncio.sleep_ms(settings.power_animation_delay)
         
         current_power_display = []
@@ -139,7 +140,7 @@ async def draw_power_chase(graphics):
     ## Draw the bar at the top of the section for total power
     graphics.set_pen(get_topbar_colour(total_energy))
     graphics.line(start_x, 0, width, 0)
-    settings.gu.update(graphics)
+    utils.gu.update(graphics)
 
 
 

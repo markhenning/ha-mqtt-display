@@ -10,14 +10,19 @@ import display_power as dp
 import display_network as dn
 import display_blinks as db
 import display_clock as dc
-import settings
+import settings 
+import utils
 
 # Local configuration
 config = connectivity.config
 
 ## Display instances and global variable loads
-gu = settings.gu
-graphics = settings.graphics
+# gu = settings.gu
+# graphics = settings.graphics
+
+## Import these here for now, there's a load of references that point back to "settings.gu and settings.graphics", will refactor later
+gu = utils.gu
+graphics = utils.graphics
 
 ## =========================
 ## Overview

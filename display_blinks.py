@@ -1,6 +1,7 @@
 import settings
 import asyncio
 import random
+import utils
 
 ## DNS Blinkies Overview
 ##
@@ -125,7 +126,7 @@ async def update_dotgrid_display(graphics):
                         # Update the pixel colour
                         new_colour = (dns_colours[current_dot.colour])[0]
                         graphics.set_pen(new_colour)
-                        graphics.pixel((start_x+x),y)
+                        graphics.pixel((start_x+x),y) # type: ignore
                         
                         # Mark cell as blank and available for use
                         blanks_queue.append([x,y])
@@ -147,7 +148,7 @@ async def update_dotgrid_display(graphics):
                     
         
         ## Draw out the changes we've made
-        settings.gu.update(graphics)            
+        utils.gu.update(graphics)            
         await asyncio.sleep(0.4)
 
 ## Function to adjust amount of dots based on MQTT messages

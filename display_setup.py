@@ -1,5 +1,6 @@
 import settings
 import asyncio
+import utils
 
 ## Load in variables
 cols = settings.vert_lines
@@ -32,7 +33,7 @@ def draw_gridline_vert(graphics):
             graphics.set_pen((graphics.create_pen(colour, colour, colour)))
             graphics.pixel(col,mid)
             
-    settings.gu.update(graphics)
+    utils.gu.update(graphics)
     
 #################################################################################################
 ### Misc Functions for display etc, none of these are used but I want somewhere to store them

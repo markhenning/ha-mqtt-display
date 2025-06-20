@@ -7,6 +7,7 @@ import socket
 import struct
 import machine
 import clock_font as cf
+import utils
 
 #### Clock Overview
 ##
@@ -85,7 +86,7 @@ def update_clock_display(graphics, curr_time):
             else:
                 graphics.set_pen(bg_pen)
             graphics.pixel((start_x + x),(start_y + y)) # type: ignore
-    settings.gu.update(graphics)    
+    utils.gu.update(graphics)    
 
 def update_bars(graphics):
     
@@ -125,7 +126,7 @@ def update_bars(graphics):
         count = count + 1
     
     # Finally, draw it to the display
-    settings.gu.update(graphics) 
+    utils.gu.update(graphics) 
 
 
 
@@ -178,4 +179,4 @@ def print_buffer(curr_time):
 #    graphics.set_pen(graphics.create_pen(0, 0, 0))
 #    graphics.set_pen(graphics.create_pen(155, 155, 155))
 #    graphics.text("2234", 33, 0, 0, 0)
-#    settings.gu.update(graphics)
+#    utils.gu.update(graphics)

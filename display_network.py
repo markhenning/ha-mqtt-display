@@ -1,6 +1,7 @@
 import math
 import settings
 import asyncio
+import utils
  
 ## Load in settings
 start_x = settings.net_start_x
@@ -29,7 +30,7 @@ def draw_network_stats(graphics):
     draw_network_history(graphics, start_x, upload_stats, upload_colours, flip=False, offset=(net_width // 2))
 
     # And finally, display the new charts
-    settings.gu.update(graphics)
+    utils.gu.update(graphics)
 
 def draw_network_history(graphics, start_x, drawdata, colour, flip=False, offset=0):
 
@@ -76,7 +77,7 @@ async def draw_current(graphics):
         if i <= upstat:
             graphics.set_pen(upload_colours[-1])
             graphics.line((start_x + (net_width - 1)), settings.height, (start_x + (net_width - 1)), (settings.height-i))
-        settings.gu.update(graphics)
+        utils.gu.update(graphics)
         await asyncio.sleep_ms(settings.net_animation_delay)
 
 async def handle_network(graphics, string_topic,string_message):

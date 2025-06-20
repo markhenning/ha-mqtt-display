@@ -1,10 +1,14 @@
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
+#import colours
+import utils
 
-# General Galactic Unicorn setup
-gu = GalacticUnicorn()
-gu.set_brightness(0.3)
-graphics = PicoGraphics(DISPLAY)
+# # General Galactic Unicorn setup
+# gu = GalacticUnicorn()
+# gu.set_brightness(0.3)
+# graphics = PicoGraphics(DISPLAY)
+graphics = utils.graphics
+gu = utils.gu
 width = GalacticUnicorn.WIDTH
 height = GalacticUnicorn.HEIGHT
 
@@ -32,21 +36,10 @@ rgbs = {
 }
 
 ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
+#pens = colours.create_pens(graphics)
 pens = {}
 for key in rgbs:
      pens[key] = graphics.create_pen(rgbs[key][0],rgbs[key][1],rgbs[key][2])
-
-# white = graphics.create_pen(255, 255, 255)
-# lgrey = graphics.create_pen(150, 150, 150)
-# green = graphics.create_pen(0, 255, 0)
-# spring = graphics.create_pen(20,225,148)
-# neon_green = graphics.create_pen(77,255,77)
-# red = graphics.create_pen(255, 0, 0)
-# blue = graphics.create_pen(0, 0, 255)
-# yellow = graphics.create_pen(255,255,0)
-# purple = graphics.create_pen(128,0,128)
-# plum = graphics.create_pen(137,40,143)
-# black = graphics.create_pen(0, 0, 0)
 
 ## Function to take an RGB value and return a list of fading colours, so we don't have to specify all the rows manually
 def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):

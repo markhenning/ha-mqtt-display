@@ -27,7 +27,7 @@ rgbs = {
 ## The follow exist to take rgb values and return "pens", which hold GU usable rgb numbers, some return dicts of lists for colour intensity fading (e.g. []'colour @ 100%', 'colour @ 80%'])
 
 
-def create_pens(graphics):
+def create_pens():
      
     ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
     c_pens = {}

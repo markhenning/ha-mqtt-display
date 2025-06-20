@@ -1,6 +1,6 @@
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
-#import colours
+import colours
 import utils
 
 # # General Galactic Unicorn setup
@@ -12,56 +12,8 @@ gu = utils.gu
 width = GalacticUnicorn.WIDTH
 height = GalacticUnicorn.HEIGHT
 
-## Basic colours - called by various scripts, placed here to be available below
-## If you need a new colour, add it here, and then into the "<thing>_colour_map" for the relevant section
-## Note: they need to be run through "graphics.create_pen(rgb) to make an actual pen to use, if you're adding
-## new outside of the maps, make sure it gets called.
-rgbs = {
-    'spring_greens' : [20,225,148],
-    'sea_greens' : [0,169,165],
-    'blues' : [153, 203, 255],
-    'mango' : [255,119,51],
-    'white' : [255, 255, 255],
-    'lgrey' : [150, 150, 150],
-    'green' : [0, 255, 0],
-    'spring' : [20,225,148],
-    'neon_green' : [77,255,77],
-    'red' : [255, 0, 0],
-    'blue' : [0, 0, 255],
-    'yellow' : [255,255,0],
-    'purple' : [128,0,128],
-    'plum' : [137,40,143],
-    'black' : [0, 0, 0],
-    'honolulu' : [14, 129, 200]
-}
-
 ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
-#pens = colours.create_pens(graphics)
-pens = {}
-for key in rgbs:
-     pens[key] = graphics.create_pen(rgbs[key][0],rgbs[key][1],rgbs[key][2])
-
-## Function to take an RGB value and return a list of fading colours, so we don't have to specify all the rows manually
-def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):
-    ## Set the rate of fading, hard coded for now
-    if sharp_fade:
-        fade = [20,30,40,50,100]
-    else:
-        fade = [40,55,70,85,100]
-
-    # If we need to, start off with a line of 0's
-    if inc_zero:
-        temp_colour = [graphics.create_pen(0, 0, 0)]
-    else:
-        temp_colour = []
-
-    for i in range(lines):
-        scale = fade[i] / 100
-        temp_colour.append(graphics.create_pen(round(scale * colour[0]), round(scale * colour[1]), round(scale * colour[2])))
-
-    return temp_colour
-
-
+pens = colours.create_pens()
 
 ##
 ##   DISPLAY LOCATIONS
@@ -108,11 +60,7 @@ power_map = { 5000 : 'red',
 power_bar_fg = pens['plum']
 power_bar_bg = pens['black']
 
-## Use the selected colours to create a dict of colours with all their scalings etc
-## For each one, we'll make an array of "'colour': [100%Colour,80%Colour,....']"
-power_colours = {}
-for entry in power_map.values():
-    power_colours[entry] = pens[entry]
+
 
 
 ##
@@ -131,11 +79,6 @@ clock_colour_map = { 'hrs': 'spring_greens',
                      'sec': 'blues',
 }
 
-## Use the selected colours to create a dict of colours with all their scalings etc
-## For each one, we'll make an array of "'colour': [100%Colour,80%Colour,....']"
-clock_colours = {}
-for entry in clock_colour_map.values():
-    clock_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= False, inc_zero= True)
 
 ##
 ## Settings - Network
@@ -147,14 +90,6 @@ net_animation_delay = 100
 net_colour_map = { 'download': 'spring_greens',
                      'upload': 'honolulu',
 }
-
-# Colours for the network bars each colour should increase through the array, we've got 5 columns for each colour, so we need 5 entries
-net_colours = {}
-for entry in net_colour_map.values():
-    net_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = False)
-
-#net_upload = net_colours[(net_colour_map['upload'])]
-#net_download = net_colours[(net_colour_map['download'])]
 
 ## Scales - map a bps rate for each number of dots to draw, adjust to match connection
 net_download_scale = {
@@ -210,7 +145,20 @@ dns_scale_factors = { 'no_error' : 10,
               'servfail' : 10,
 }
 
-## Generate the internal colour lists for us to call later
-dns_colours = {}
-for entry in dns_colour_map.values():
-    dns_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= True, inc_zero = True)
+
+
+
+## The following calls functions in colours that will take the colour maps and generate lists of GU pens of various intensities
+## These are used for the actual colours on the display
+## Technically these should be in colours.py, but everything references them in settings.py, will migrate later
+net_colours = colours.build_net_colours(net_colour_map)
+
+clock_colours = colours.build_clock_colours(clock_colour_map)
+
+dns_colours = colours.build_dns_colours(dns_colour_map)
+
+## Finally, some don't need fading, just a list of pens, so we just make a list of the pens that the power display bar needs
+power_colours = {}
+for entry in power_map.values():
+    power_colours[entry] = pens[entry]
+

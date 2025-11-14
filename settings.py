@@ -86,6 +86,9 @@ power_bar_bg = pens['black']
 
 ntp_pool = "pool.ntp.org"
 
+## Super basic file to store hr_offset
+clock_hr_offset_file = 'hr_offet'
+
 clock_time_fg = pens['lgrey']
 clock_time_bg = pens['black']
 

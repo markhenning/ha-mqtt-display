@@ -5,6 +5,7 @@ import asyncio
 import time
 import socket
 import struct
+import os
 import machine
 import clock_font as cf
 import utils
@@ -31,11 +32,26 @@ start_y = settings.clock_start_y
 ## Internal stuff
 NTP_DELTA = 2208988800
 rtc = machine.RTC()
+## TODO, add in saving/loading the hr_offset from file
 hr_offset = 0
 
 displayedTime = 0000
 display_buffer = [] * 5
 
+## Unused code - saving/loading hr offset
+# def bump_save_hr_offset():
+#     global hr_offset
+#     hr_offset += 1
+#     if hr_offset == 24:
+#         hr_offset = 0
+#     try:
+#         f = open(settings.clock_hr_offset_file, "wb")
+#         f.write(str(hr_offset).encode())
+#         f.close()
+#     except OSError:
+#         print("Error updating hour offset file")
+#     except TypeError:
+#         print("Error with data format for writing hour offset")
 
 ## set_time is from https://gist.github.com/aallan - set the hardware RTC from NTP
 ## Called one during main script startup
@@ -56,6 +72,21 @@ def set_time():
     t = val - ( NTP_DELTA - (hr_offset * 3600))
     tm = time.gmtime(t)
     rtc.datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
+
+def bump_hour(graphics):
+
+    ## Get the time in seconds, bump, set the clock
+    epoch_sec = time.mktime(time.gmtime()) ## This is correct, full python doesn't use a positional arguement, micropython does as far as I can tell
+    ts = epoch_sec + (3600)
+    tm = time.gmtime(ts)
+
+    rtc.datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
+
+    ## Save the new hour offset to disk, so it auto loads next startup
+    ##bump_save_hr_offset()
+
+    ## Call a clock display update, outside of the normal loop
+    update_clock_display(graphics, "%02d%02d"%time.localtime()[3:5])
 
 
 ## Create and return a list of lists of X and . for foreground/background pixels

@@ -95,7 +95,10 @@ async def main(client):
     ## End - One off actions
 
     ## And the main wait for MQTT, callbacks will trigger what it needs
-    while True:
+    while True:        
+        if gu.is_pressed(GalacticUnicorn.SWITCH_A):
+            dc.bump_hour(graphics)
+
         await asyncio.sleep(1)
 
 

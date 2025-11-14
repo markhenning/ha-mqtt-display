@@ -45,16 +45,19 @@ def callback(topic, msg, retained, properties=None):
     string_message = msg.decode()
     
     ## Decide what to do with it based on message topic:
-    if "router_current" in string_topic:
+
+    if any(entry in string_topic for entry in settings.topic_network):
         asyncio.create_task(dn.handle_network(graphics, string_topic, string_message))
-    elif 'tdns_' in string_topic:
+    elif any(entry in string_topic for entry in settings.topic_dns):
         ## Don't need an async for this as we're just modifying an array in memory, there's already an async task for blinkies
         if settings.dns_use_mqtt:
             db.handle_dns(string_topic, string_message)
         else:
             pass
-    elif ('power' or 'energy' in string_topic): 
+    elif any(entry in string_topic for entry in settings.topic_power): 
         asyncio.create_task(dp.handle_energy(graphics,string_topic,string_message))
+    else:
+        print(f"Unused message: {string_topic, string_message}")
 
 ## Connection Handler - essentially just "Subscribe to these topics")
 async def conn_han(client):

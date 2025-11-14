@@ -150,7 +150,7 @@ async def update_dotgrid_display(graphics):
         
         ## Draw out the changes we've made
         utils.gu.update(graphics)            
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(settings.dns_blink_wait)
 
 ## Function to adjust amount of dots based on MQTT messages
 ## This is a lot of copy/paste for logic, I can tighted it up by using colour_map.keys, but if anyone ever wants to add something new/adjust individual rates, this is the best way to demo it
@@ -166,6 +166,7 @@ def handle_dns(string_topic, string_message):
     for response in colour_map.keys():
         
         if response in string_topic:
+
             scaled_response = int(float(string_message)) // scales[response]
             
             if scaled_response <= mins[(colour_map[response])]:

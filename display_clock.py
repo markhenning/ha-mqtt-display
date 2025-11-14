@@ -31,7 +31,7 @@ start_y = settings.clock_start_y
 ## Internal stuff
 NTP_DELTA = 2208988800
 rtc = machine.RTC()
-hr_offset = 1
+hr_offset = 0
 
 displayedTime = 0000
 display_buffer = [] * 5

@@ -85,15 +85,15 @@ async def handle_network(graphics, string_topic,string_message):
     global  download_stats,  upload_stats
     int_message = int(float(string_message))
     
-    
-    if "download" in string_topic:
-        bar_height = calculate_network_pixels(int_message,'up')
+    if settings.topic_network_download in string_topic:
+        bar_height = calculate_network_pixels(int_message,'down')
         download_stats.pop(0)
         download_stats.append(bar_height)
         # We normally get up and down stats less than 0.1 seconds apart, there's no point in re-drawing for both
         #draw_network_stats(graphics)
-    elif "upload" in string_topic:
-        bar_height = calculate_network_pixels(int_message,'down')
+    
+    elif settings.topic_network_upload in string_topic:
+        bar_height = calculate_network_pixels(int_message,'up')
         upload_stats.pop(0)
         upload_stats.append(bar_height)
         draw_network_stats(graphics)

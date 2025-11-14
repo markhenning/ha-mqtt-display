@@ -19,6 +19,7 @@ energy_stats = {}
 total_energy = 0
 
 def get_topbar_colour(total_energy):
+    ## Temporary colour selection during init, not used after first value
     bar_colour = settings.pens['white']
     for key in sorted(settings.power_map.keys(), reverse=True): 
         if total_energy >= key:
@@ -154,7 +155,7 @@ async def handle_energy(graphics, string_topic, string_message):
     if string_message != "unavailable":
 
         ## Then work out what to do
-        if "current_demand" in string_topic: ## "Current Demand" is the total energy draw from Octopus, store it
+        if settings.topic_power_total in string_topic: ## "Current Demand" is the total energy draw from Octopus, store it
             total_energy = int(float(string_message))
             await draw_power_chase(graphics)
         

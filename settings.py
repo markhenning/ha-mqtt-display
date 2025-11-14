@@ -12,6 +12,24 @@ gu = utils.gu
 width = GalacticUnicorn.WIDTH
 height = GalacticUnicorn.HEIGHT
 
+### Individual Component strings
+## Used by individiual handle_<thing> functions
+## If these are found in the string, then it's an upload/download/full data etc
+topic_network_download = 'download'
+topic_network_upload = 'upload'
+
+## Power - this string denotes the "total power usage" from the normal device stats
+topic_power_total = "current_demand"
+
+#### MQTT Topic Strings
+#
+# Used by the callback function in main
+# If <any of the list> is in the string topic, route to power/network/dns etc
+# These are all lists, not individual strings
+topic_power = ['power','energy']
+topic_network = ['router_current']
+topic_dns = ['tdns']
+
 ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
 pens = colours.create_pens()
 
@@ -62,7 +80,6 @@ power_bar_bg = pens['black']
 
 
 
-
 ##
 ## Settings - Clock
 ##
@@ -94,28 +111,28 @@ net_colour_map = { 'download': 'spring_greens',
 ## Scales - map a bps rate for each number of dots to draw, adjust to match connection
 net_download_scale = {
     1 : 0,
-    2 : 2000,
-    3 : 5000,
-    4 : 10000, 
-    5 : 50000,
-    6 : 500000,
-    7 : 2000000,
-    8 : 2000000,
-    9 : 4000000,
-    10 : 8000000,
+    2 : 200000,
+    3 : 1000000,
+    4 : 5000000, 
+    5 : 10000000,
+    6 : 25000000,
+    7 : 50000000,
+    8 : 200000000,
+    9 : 500000000,
+    10 : 800000000,
 }
 
 net_upload_scale = {
     1 : 0,
-    2 : 1000,
-    3 : 4000,
-    4 : 10000, 
-    5 : 25000,
-    6 : 250000,
-    7 : 500000,
-    8 : 700000,
-    9 : 900000,
-    10 : 1000000,
+    2 : 500000,
+    3 : 1000000,
+    4 : 3000000, 
+    5 : 5000000,
+    6 : 10000000,
+    7 : 20000000,
+    8 : 40000000,
+    9 : 60000000,
+    10 : 100000000,
 }
 
 ##
@@ -124,6 +141,9 @@ net_upload_scale = {
 
 # Flag to use data from mqtt or generate random data for the blinks
 dns_use_mqtt = True
+
+## Time to sleep between display updates (blink speed)
+dns_blink_wait = 0.4
 
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
 dns_colour_map = { 'no_error' : 'honolulu',

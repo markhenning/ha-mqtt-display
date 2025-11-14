@@ -1,6 +1,7 @@
 from galactic import GalacticUnicorn
 from picographics import PicoGraphics, DISPLAY_GALACTIC_UNICORN as DISPLAY
 import utils
+#import settings
 
 graphics = utils.graphics
 
@@ -79,3 +80,14 @@ def build_clock_colours(clock_colour_map):
         clock_colours[entry] = build_colour_fade(rgbs[entry], sharp_fade= False, inc_zero= True)
     
     return clock_colours
+
+# net_colours = build_net_colours(settings.net_colour_map)
+
+# clock_colours = build_clock_colours(settings.clock_colour_map)
+
+# dns_colours = build_dns_colours(settings.dns_colour_map)
+
+## Finally, some don't need fading, just a list of pens, so we just make a list of the pens that the power display bar needs
+# power_colours = {}
+# for entry in power_map.values():
+#     power_colours[entry] = pens[entry]

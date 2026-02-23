@@ -5,6 +5,7 @@ import utils
 
 graphics = utils.graphics
 
+## Colours we can call from, add new colours here to be able to use them
 rgbs = {
     'spring_greens' : [20,225,148],
     'sea_greens' : [0,169,165],
@@ -25,11 +26,9 @@ rgbs = {
 }
 
 ## List/Dict building funtions
+
 ## The follow exist to take rgb values and return "pens", which hold GU usable rgb numbers, some return dicts of lists for colour intensity fading (e.g. []'colour @ 100%', 'colour @ 80%'])
-
-
 def create_pens():
-     
     ## Convert all of the rgbs to "pens" so we can call them quickly and easily with pens['white'] etc
     c_pens = {}
     for key in rgbs:
@@ -38,6 +37,7 @@ def create_pens():
     return c_pens
 
 ## Function to take an RGB value and return a list of fading colours, so we don't have to specify all the rows manually
+# inc_zero -- Start the return array with black (0,0,0) (Useful for DNS blinks), otherwise it'll be a faded colour (useful for network graphs)
 def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):
     ## Set the rate of fading, hard coded for now
     if sharp_fade:
@@ -57,7 +57,7 @@ def build_colour_fade (colour, lines = 5, inc_zero = True, sharp_fade = True):
 
     return temp_colour
 
-## Functions specific to what's required for each type
+## Functions specific to what's required for each graph type
 def build_dns_colours(dns_colour_map):
     dns_colours = {}
     for entry in dns_colour_map.values():
@@ -81,13 +81,3 @@ def build_clock_colours(clock_colour_map):
     
     return clock_colours
 
-# net_colours = build_net_colours(settings.net_colour_map)
-
-# clock_colours = build_clock_colours(settings.clock_colour_map)
-
-# dns_colours = build_dns_colours(settings.dns_colour_map)
-
-## Finally, some don't need fading, just a list of pens, so we just make a list of the pens that the power display bar needs
-# power_colours = {}
-# for entry in power_map.values():
-#     power_colours[entry] = pens[entry]

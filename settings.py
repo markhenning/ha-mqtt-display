@@ -70,12 +70,12 @@ power_width = 10
 power_rows = 10 # (note - you need top 1 for the power bar, so for the GU - "11 rows - 1 for power bar"
 power_animation_delay = 60
 # Threshold powers for what colour to make the top bar
-power_map = { 5000 : 'red',
-              500 : 'yellow',
+power_map = { 5000 : 'raspberry',
+              500 : 'mango',
               0 : 'spring',
               }
 # bar_colours
-power_bar_fg = pens['plum']
+power_bar_fg = pens['cornflour']
 power_bar_bg = pens['black']
 
 
@@ -120,7 +120,7 @@ net_download_scale = {
     5 : 10000000,
     6 : 25000000,
     7 : 50000000,
-    8 : 200000000,
+    8 : 100000000,
     9 : 500000000,
     10 : 800000000,
 }
@@ -137,7 +137,7 @@ net_upload_scale = {
     9 : 60000000,
     10 : 100000000,
 }
-
+ 
 ##
 ## Settings - DNS Blink
 ##
@@ -147,7 +147,7 @@ dns_use_mqtt = True
 
 ## Time to sleep between display updates (blink speed)
 dns_blink_wait = 0.4
-
+ 
 ## Map the string we're going to search for in MQTT to a set of colours defined further down
 dns_colour_map = { 'no_error' : 'honolulu',
               'blocked' : 'mango',

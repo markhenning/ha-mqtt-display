@@ -74,6 +74,7 @@ def set_time():
     rtc.datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 
 def bump_hour(graphics):
+    ## Bumb the clock by 1 hour (called from program main script whenver the A button is held down on device)
 
     ## Get the time in seconds, bump, set the clock
     epoch_sec = time.mktime(time.gmtime()) ## This is correct, full python doesn't use a positional arguement, micropython does as far as I can tell
@@ -166,7 +167,7 @@ async def print_clock(graphics):
     printed_min = -1
     
     draw_clock_chrome(graphics)
-    
+        ## Main async handler for network
     while True:
 
         ## First off - update the bars under the clock, this needs to happen every second

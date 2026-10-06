@@ -4,8 +4,12 @@ import asyncio
 import utils
  
 ## Load in settings
+
+# Where to start on the display, horizonally
 start_x = settings.net_start_x
+## How many bars to have in the section
 net_width = settings.net_width
+# Colours
 download_colours = settings.net_colours[(settings.net_colour_map['download'])]
 upload_colours = settings.net_colours[(settings.net_colour_map['upload'])]
 
@@ -33,6 +37,8 @@ def draw_network_stats(graphics):
     utils.gu.update(graphics)
 
 def draw_network_history(graphics, start_x, drawdata, colour, flip=False, offset=0):
+    ## Draw the "old" data for upload or download, these aren't animated, they're just "shift the current upload/download graph over to the left"
+    ## "Flip" reverses the order (Originally had new data in the middle two columns, but it looks odd, but still works and explains why this is called seperately for old upload/download)
 
     values = drawdata[:-1]
     if flip:
@@ -45,11 +51,17 @@ def draw_network_history(graphics, start_x, drawdata, colour, flip=False, offset
         column += 1
         
 def calculate_network_pixels(bps, direction):
+    ## Returns the number of vertical pixels to draw for the speed and current scale settings
+
     dots = 1
+
+    ## Decide which scale to use (up or download)
     if direction == 'up':
         scale = settings.net_upload_scale
     else:
         scale = settings.net_download_scale
+
+    # Work out the number of vertical dots, based on the selected scale
     for key in scale.keys():
         if scale[key] < bps:
             dots = key
@@ -57,12 +69,13 @@ def calculate_network_pixels(bps, direction):
     return dots
 
 async def draw_current(graphics):
-    
+    ## Draw the latest stats to the display, one dot at a time for the rising animation
+
     ## Lock these so we don't have the underlying array changing in the 0.5s we're drawing
     upstat = upload_stats[-1]
     downstat = download_stats[-1]
     
-    ## Work out how many we need to run, bigger number wins
+    ## Work out how many times we need to run the "add a vertical dot" loop for animating the bar "growing", bigger number wins
     if downstat < upstat:
         loop = upstat
     else:
@@ -70,14 +83,19 @@ async def draw_current(graphics):
     
     ## Loop and add 1 pixel height every <period>, stopping when the height's correct
     for i in range(loop + 1):
+        
         if i <= downstat:
             graphics.set_pen(download_colours[-1])
+
             ### I'm not insane, "line" function can have off by one errors if it's a single pixel width
             graphics.line((start_x + (net_width // 2) - 1), settings.height, (start_x + (net_width // 2) - 1), (settings.height-i))
+        
         if i <= upstat:
             graphics.set_pen(upload_colours[-1])
             graphics.line((start_x + (net_width - 1)), settings.height, (start_x + (net_width - 1)), (settings.height-i))
+        
         utils.gu.update(graphics)
+
         await asyncio.sleep_ms(settings.net_animation_delay)
 
 async def handle_network(graphics, string_topic,string_message):
@@ -90,6 +108,7 @@ async def handle_network(graphics, string_topic,string_message):
         download_stats.pop(0)
         download_stats.append(bar_height)
         # We normally get up and down stats less than 0.1 seconds apart, there's no point in re-drawing for both
+        # So this is here, but commented out, and it redraws when we get the upload stat
         #draw_network_stats(graphics)
     
     elif settings.topic_network_upload in string_topic:
@@ -99,7 +118,7 @@ async def handle_network(graphics, string_topic,string_message):
         draw_network_stats(graphics)
         asyncio.create_task(draw_current(graphics))
 
-
     else:
+        ## Account for any spurious data from the router we don't understand
         print("Error: Don't know what to do with " + string_topic)
 
